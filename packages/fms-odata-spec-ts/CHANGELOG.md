@@ -53,9 +53,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - All corrections confirmed by curl against FileMaker Server 26.0.1 and
   cross-referenced with the official Claris OData guide
-  (https://help.claris.com/en/odata-guide/content/webhook-options.html) and
+  (<https://help.claris.com/en/odata-guide/content/webhook-options.html>) and
   the reference implementation at
-  https://github.com/fsans/fms-odata-webhooks.
+  <https://github.com/fsans/fms-odata-webhooks>.
 
 ## [2.0.0] - 2026-06-30
 
