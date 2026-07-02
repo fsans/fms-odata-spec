@@ -286,14 +286,16 @@
       "path": "/{database}/{table}",
       "description": "Create a new record",
       "minVersion": "20",
-      "contentType": "application/json"
+      "contentType": "application/json",
+      "alsoMethods": ["PUT"]
     },
     "updateRecord": {
       "method": "PATCH",
       "path": "/{database}/{table}({key})",
       "description": "Update a record",
       "minVersion": "20",
-      "contentType": "application/json"
+      "contentType": "application/json",
+      "alsoMethods": ["PUT"]
     },
     "deleteRecord": {
       "method": "DELETE",
@@ -341,7 +343,8 @@
       "path": "/{database}/{table}({key})",
       "description": "Update container fields with base64-encoded data",
       "minVersion": "20",
-      "contentType": "application/json"
+      "contentType": "application/json",
+      "alsoMethods": ["PUT"]
     },
     "createTable": {
       "method": "POST",
@@ -355,7 +358,8 @@
       "path": "/{database}/FileMaker_Tables/{tableName}",
       "description": "Add fields to a table",
       "minVersion": "20",
-      "contentType": "application/json"
+      "contentType": "application/json",
+      "alsoMethods": ["PUT"]
     },
     "deleteTable": {
       "method": "DELETE",
