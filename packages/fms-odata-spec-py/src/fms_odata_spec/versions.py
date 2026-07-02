@@ -13,8 +13,11 @@ from typing import Dict, Literal, Optional
 __all__ = [
     "FMVersionMajor",
     "FMVersionStatus",
+    "ODataProtocolVersion",
     "FM_VERSION_NAMES",
     "ODATA_PROTOCOL_VERSION",
+    "ODATA_CONFORMANCE_LEVEL",
+    "DEFAULT_PAGE_SIZE",
     "FMFeatureFlags",
     "FMQueryOptionFlags",
     "FMVersionInfo",
@@ -25,22 +28,34 @@ __all__ = [
 ]
 
 #: FileMaker Server version major numbers.
-FMVersionMajor = Literal["19", "21", "22", "26", "future"]
+FMVersionMajor = Literal["20", "21", "22", "26", "future"]
 
 #: Version status.
-FMVersionStatus = Literal["baseline", "supported", "current", "future"]
+FMVersionStatus = Literal["supported", "current", "future"]
+
+#: OData protocol version for a specific FileMaker Server version.
+ODataProtocolVersion = Literal["4.0", "4.01"]
 
 #: Human-readable version names.
 FM_VERSION_NAMES: Dict[FMVersionMajor, str] = {
-    "19": "FileMaker 19.x",
-    "21": "Claris FileMaker 2023",
-    "22": "Claris FileMaker 2024",
+    "20": "Claris FileMaker 2023",
+    "21": "Claris FileMaker 2024",
+    "22": "Claris FileMaker 2025",
     "26": "Claris FileMaker 2026",
     "future": "Future / next",
 }
 
-#: OData protocol version implemented by FileMaker (always 4.0).
-ODATA_PROTOCOL_VERSION: Literal["4.0"] = "4.0"
+#: OData protocol version implemented by FileMaker.
+#:
+#: v20.x implements OData 4.0. v21.x onward implements partial OData 4.01
+#: at intermediate conformance level with some exceptions.
+ODATA_PROTOCOL_VERSION: Literal["4.01"] = "4.01"
+
+#: OData conformance level.
+ODATA_CONFORMANCE_LEVEL: Literal["intermediate"] = "intermediate"
+
+#: Default server-driven page size (records per page).
+DEFAULT_PAGE_SIZE: int = 10_000
 
 
 @dataclass(frozen=True)
@@ -67,12 +82,17 @@ class FMFeatureFlags:
     apply_aggregation: bool
     type_casting: bool
     parameterized_filters: bool
+    simplified_query_syntax: bool
+    nested_queries: bool
+    batch_preference_inheritance: bool
+    metadata_filtering: bool
     immutable_id_urls: bool
+    fm_comment: bool
     ai_annotation: bool
+    computed_annotation: bool
     server_version_annotation: bool
     enriched_fm_comment: bool
     auth_basic: bool
-    auth_fmid: bool
     auth_oauth: bool
 
 
@@ -101,6 +121,7 @@ class FMVersionInfo:
     release_year: Optional[int]
     internal_version: str
     status: FMVersionStatus
+    odata_protocol_version: ODataProtocolVersion
     features: FMFeatureFlags
     query_options: FMQueryOptionFlags
 
@@ -127,12 +148,17 @@ def _flags(
     apply_aggregation: bool,
     type_casting: bool,
     parameterized_filters: bool,
+    simplified_query_syntax: bool,
+    nested_queries: bool,
+    batch_preference_inheritance: bool,
+    metadata_filtering: bool,
     immutable_id_urls: bool,
+    fm_comment: bool,
     ai_annotation: bool,
+    computed_annotation: bool,
     server_version_annotation: bool,
     enriched_fm_comment: bool,
     auth_basic: bool,
-    auth_fmid: bool,
     auth_oauth: bool,
 ) -> FMFeatureFlags:
     return FMFeatureFlags(
@@ -156,12 +182,17 @@ def _flags(
         apply_aggregation=apply_aggregation,
         type_casting=type_casting,
         parameterized_filters=parameterized_filters,
+        simplified_query_syntax=simplified_query_syntax,
+        nested_queries=nested_queries,
+        batch_preference_inheritance=batch_preference_inheritance,
+        metadata_filtering=metadata_filtering,
         immutable_id_urls=immutable_id_urls,
+        fm_comment=fm_comment,
         ai_annotation=ai_annotation,
+        computed_annotation=computed_annotation,
         server_version_annotation=server_version_annotation,
         enriched_fm_comment=enriched_fm_comment,
         auth_basic=auth_basic,
-        auth_fmid=auth_fmid,
         auth_oauth=auth_oauth,
     )
 
@@ -196,12 +227,13 @@ def _qopts(
 #: Feature flag matrix across all supported versions.
 #: Import this to programmatically check feature availability.
 FM_VERSION_MATRIX: Dict[FMVersionMajor, FMVersionInfo] = {
-    "19": FMVersionInfo(
-        major="19",
-        name="FileMaker 19.x",
-        release_year=None,
-        internal_version="19.x",
-        status="baseline",
+    "20": FMVersionInfo(
+        major="20",
+        name="Claris FileMaker 2023",
+        release_year=2023,
+        internal_version="20.x",
+        status="supported",
+        odata_protocol_version="4.0",
         features=_flags(
             service_document=True, metadata=True, database_listing=True, table_listing=True,
             record_crud=True, record_references=True, cross_join=True, batch=True,
@@ -209,8 +241,11 @@ FM_VERSION_MATRIX: Dict[FMVersionMajor, FMVersionInfo] = {
             container_binary_upload=True, container_base64_upload=True, container_download=True,
             schema_modification=True, webhooks=False, webhook_query_headers=False,
             apply_aggregation=False, type_casting=False, parameterized_filters=False,
-            immutable_id_urls=False, ai_annotation=False, server_version_annotation=False,
-            enriched_fm_comment=False, auth_basic=True, auth_fmid=False, auth_oauth=False,
+            simplified_query_syntax=False, nested_queries=False, batch_preference_inheritance=False,
+            metadata_filtering=False, immutable_id_urls=False,
+            fm_comment=False, ai_annotation=False, computed_annotation=False,
+            server_version_annotation=False, enriched_fm_comment=False,
+            auth_basic=True, auth_oauth=False,
         ),
         query_options=_qopts(
             filter_=True, select=True, orderby=True, top=True, skip=True,
@@ -219,19 +254,23 @@ FM_VERSION_MATRIX: Dict[FMVersionMajor, FMVersionInfo] = {
     ),
     "21": FMVersionInfo(
         major="21",
-        name="Claris FileMaker 2023",
-        release_year=2023,
+        name="Claris FileMaker 2024",
+        release_year=2024,
         internal_version="21.x",
         status="supported",
+        odata_protocol_version="4.01",
         features=_flags(
             service_document=True, metadata=True, database_listing=True, table_listing=True,
             record_crud=True, record_references=True, cross_join=True, batch=True,
-            scripts=True, scripts_by_fmsid=False, script_listing=False,
+            scripts=True, scripts_by_fmsid=True, script_listing=False,
             container_binary_upload=True, container_base64_upload=True, container_download=True,
-            schema_modification=True, webhooks=True, webhook_query_headers=False,
+            schema_modification=True, webhooks=False, webhook_query_headers=False,
             apply_aggregation=False, type_casting=True, parameterized_filters=True,
-            immutable_id_urls=False, ai_annotation=False, server_version_annotation=False,
-            enriched_fm_comment=False, auth_basic=True, auth_fmid=True, auth_oauth=True,
+            simplified_query_syntax=True, nested_queries=True, batch_preference_inheritance=True,
+            metadata_filtering=False, immutable_id_urls=False,
+            fm_comment=True, ai_annotation=True, computed_annotation=False,
+            server_version_annotation=False, enriched_fm_comment=False,
+            auth_basic=True, auth_oauth=True,
         ),
         query_options=_qopts(
             filter_=True, select=True, orderby=True, top=True, skip=True,
@@ -240,19 +279,23 @@ FM_VERSION_MATRIX: Dict[FMVersionMajor, FMVersionInfo] = {
     ),
     "22": FMVersionInfo(
         major="22",
-        name="Claris FileMaker 2024",
-        release_year=2024,
+        name="Claris FileMaker 2025",
+        release_year=2025,
         internal_version="22.x",
         status="supported",
+        odata_protocol_version="4.01",
         features=_flags(
             service_document=True, metadata=True, database_listing=True, table_listing=True,
             record_crud=True, record_references=True, cross_join=True, batch=True,
-            scripts=True, scripts_by_fmsid=False, script_listing=False,
+            scripts=True, scripts_by_fmsid=True, script_listing=False,
             container_binary_upload=True, container_base64_upload=True, container_download=True,
             schema_modification=True, webhooks=True, webhook_query_headers=True,
             apply_aggregation=True, type_casting=True, parameterized_filters=True,
-            immutable_id_urls=False, ai_annotation=False, server_version_annotation=False,
-            enriched_fm_comment=False, auth_basic=True, auth_fmid=True, auth_oauth=True,
+            simplified_query_syntax=True, nested_queries=True, batch_preference_inheritance=True,
+            metadata_filtering=True, immutable_id_urls=False,
+            fm_comment=True, ai_annotation=True, computed_annotation=False,
+            server_version_annotation=False, enriched_fm_comment=False,
+            auth_basic=True, auth_oauth=True,
         ),
         query_options=_qopts(
             filter_=True, select=True, orderby=True, top=True, skip=True,
@@ -265,6 +308,7 @@ FM_VERSION_MATRIX: Dict[FMVersionMajor, FMVersionInfo] = {
         release_year=2026,
         internal_version="26.x",
         status="current",
+        odata_protocol_version="4.01",
         features=_flags(
             service_document=True, metadata=True, database_listing=True, table_listing=True,
             record_crud=True, record_references=True, cross_join=True, batch=True,
@@ -272,8 +316,11 @@ FM_VERSION_MATRIX: Dict[FMVersionMajor, FMVersionInfo] = {
             container_binary_upload=True, container_base64_upload=True, container_download=True,
             schema_modification=True, webhooks=True, webhook_query_headers=True,
             apply_aggregation=True, type_casting=True, parameterized_filters=True,
-            immutable_id_urls=True, ai_annotation=True, server_version_annotation=True,
-            enriched_fm_comment=True, auth_basic=True, auth_fmid=True, auth_oauth=True,
+            simplified_query_syntax=True, nested_queries=True, batch_preference_inheritance=True,
+            metadata_filtering=True, immutable_id_urls=True,
+            fm_comment=True, ai_annotation=True, computed_annotation=True,
+            server_version_annotation=True, enriched_fm_comment=True,
+            auth_basic=True, auth_oauth=True,
         ),
         query_options=_qopts(
             filter_=True, select=True, orderby=True, top=True, skip=True,
@@ -286,6 +333,7 @@ FM_VERSION_MATRIX: Dict[FMVersionMajor, FMVersionInfo] = {
         release_year=None,
         internal_version="unknown",
         status="future",
+        odata_protocol_version="4.01",
         features=_flags(
             service_document=True, metadata=True, database_listing=True, table_listing=True,
             record_crud=True, record_references=True, cross_join=True, batch=True,
@@ -293,8 +341,11 @@ FM_VERSION_MATRIX: Dict[FMVersionMajor, FMVersionInfo] = {
             container_binary_upload=True, container_base64_upload=True, container_download=True,
             schema_modification=True, webhooks=True, webhook_query_headers=True,
             apply_aggregation=True, type_casting=True, parameterized_filters=True,
-            immutable_id_urls=True, ai_annotation=True, server_version_annotation=True,
-            enriched_fm_comment=True, auth_basic=True, auth_fmid=True, auth_oauth=True,
+            simplified_query_syntax=True, nested_queries=True, batch_preference_inheritance=True,
+            metadata_filtering=True, immutable_id_urls=True,
+            fm_comment=True, ai_annotation=True, computed_annotation=True,
+            server_version_annotation=True, enriched_fm_comment=True,
+            auth_basic=True, auth_oauth=True,
         ),
         query_options=_qopts(
             filter_=True, select=True, orderby=True, top=True, skip=True,
@@ -304,7 +355,7 @@ FM_VERSION_MATRIX: Dict[FMVersionMajor, FMVersionInfo] = {
 }
 
 #: Ordered list of concrete (non-future) versions, oldest first.
-_VERSION_ORDER = ("19", "21", "22", "26")
+_VERSION_ORDER = ("20", "21", "22", "26")
 
 
 def has_feature(version: FMVersionMajor, feature: str) -> bool:

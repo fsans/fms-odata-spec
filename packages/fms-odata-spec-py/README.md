@@ -10,9 +10,9 @@ package has **no runtime dependency** on the TypeScript package (or vice versa).
 
 ## What's in the box
 
-- Version identifiers and a feature-flag matrix for FileMaker Server 19.x,
-  2023, 2024, and 2026 (`versions`).
-- Authentication helpers and config types for Basic and Claris ID (FMID) auth
+- Version identifiers and a feature-flag matrix for Claris FileMaker 2023,
+  2024, 2025, and 2026 (`versions`).
+- Authentication helpers and config types for Basic and OAuth Bearer auth
   (`auth`).
 - Endpoint descriptors and version-scoped lookup helpers (`endpoints`).
 - OData query-option types and literal-formatting helpers (`query_options`).
@@ -60,7 +60,7 @@ from fms_odata_spec import (
 # Check feature availability per FileMaker Server version.
 # Feature names are snake_case (matching the FMFeatureFlags dataclass fields).
 assert has_feature("26", "scripts_by_fmsid") is True
-assert has_feature("19", "webhooks") is False
+assert has_feature("20", "webhooks") is False
 
 # Build a Basic auth header value.
 hdr = basic_auth("admin", "secret")  # -> "Basic YWRtaW46c2VjcmV0"
@@ -78,13 +78,12 @@ assert format_literal(42) == "42"
 
 ## Versioning
 
-This package is versioned independently of `@fms-odata/spec-ts` and starts at
-`0.1.0`. It is published to [PyPI](https://pypi.org/project/fms-odata-spec/) as
-`fms-odata-spec`.
+This package is versioned independently of `@fms-odata/spec-ts`. It is published
+to [PyPI](https://pypi.org/project/fms-odata-spec/) as `fms-odata-spec`.
 
-## Roadmap to a real v0.1.0 release
+## Roadmap
 
-> **IMPORTANT — these items must be addressed before publishing 0.1.0 to PyPI.**
+> **IMPORTANT — these items must be addressed before publishing to PyPI.**
 > See `AGENTS.md` at the repository root for the same list with more detail.
 
 - [ ] **PyPI publishing workflow** — `.github/workflows/py-publish.yml` exists
@@ -95,13 +94,13 @@ This package is versioned independently of `@fms-odata/spec-ts` and starts at
 - [x] **LICENSE bundling** — DONE. `LICENSE` is copied into this directory
       and declared as a wheel artifact + sdist include in `pyproject.toml`;
       verified it ships in both the wheel and sdist.
-- [ ] **CHANGELOG** — add `CHANGELOG.md` with the 0.1.0 entry.
+- [ ] **CHANGELOG** — add `CHANGELOG.md` with the 2.0.0 entry.
 - [ ] **`ODataEntity[T]` ergonomics** — confirm the wrapping-dataclass shape
       (`envelope.entity.field`) is acceptable before the first release; it is a
       breaking change to alter afterwards.
 - [ ] **CI matrix** — add Python 3.14 to `py-ci.yml` once
       `actions/setup-python` supports it.
-- [ ] **Async token-refresh** — document that `FMIDAuthConfig.on_unauthorized`
+- [ ] **Async token-refresh** — document that `FMOAuthAuthConfig.on_unauthorized`
       is typed but not invoked by this package (downstream must wire it).
 - [ ] **Shared schema source** — revisit whether both language packages should
       be generated from a single JSON Schema / CSDL source before they drift.

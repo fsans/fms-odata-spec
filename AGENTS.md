@@ -15,9 +15,9 @@ This is a **specification repository**, not a runnable application. It contains:
 
 - **No emojis** in any generated markdown or code.
 - **No runtime code** — the TS package is types-only (no implementation logic). The Python package is types + pure helpers only (no HTTP client, no validation framework).
-- **Source of truth**: official Claris OData docs (https://help.claris.com/en/odata-guide/) + observed behavior from the two reference repos in `_research/` (gitignored).
-- **Version naming**: use "FileMaker 19.x", "Claris 2023", "Claris 2024", "Claris 2026" (current). Never guess future version numbers.
-- **OData protocol version**: FileMaker implements OData 4.0, not 4.01. The 4.01 spec is referenced for conventions only.
+- **Source of truth**: official Claris OData docs (<https://help.claris.com/en/odata-guide/>) + observed behavior from the two reference repos in `_research/` (gitignored).
+- **Version naming**: use "Claris 2023" (v20.x), "Claris 2024" (v21.x), "Claris 2025" (v22.x), "Claris 2026" (v26.x, current). Version 19.x is dropped and no longer supported. Never guess future version numbers.
+- **OData protocol version**: FileMaker implements OData 4.0 for v20.x, and partial OData 4.01 from v21.1 onward, at intermediate conformance level with some exceptions. The URL version segment remains `v4` for all versions. The 4.01 features added in v21.1 include: simplified query syntax (no `$` prefix required), argument parameterization, advanced query nesting, data type casting, and batch preference inheritance.
 - **URL pattern**: `https://host/fmi/odata/v4/<database>/<resource>` — version segment is always `v4`.
 
 ## Branching model (Git Flow)
@@ -34,6 +34,7 @@ This is a **specification repository**, not a runnable application. It contains:
 4. Push everything: `git push origin develop main --tags`.
 
 **Tag rules:**
+
 - Semantic versioning: `vMAJOR.MINOR.PATCH`.
 - Annotated tags only (`git tag -a`), never lightweight tags.
 - Tags only on `main`, never on `develop`.
@@ -78,22 +79,22 @@ cd packages/fms-odata-spec-py
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
-pytest                           # 159 tests
+pytest                           # 173 tests
 python -m build                  # sdist + wheel into dist/
 ```
 
-## TODO — fms-odata-spec-py v0.1.0 release blockers
+## TODO — fms-odata-spec-py v2.0.0 release blockers
 
-> **IMPORTANT — read this before cutting the Python v0.1.0 release.**
+> **IMPORTANT — read this before cutting the Python v2.0.0 release.**
 > These items were intentionally deferred during the initial port and MUST be
-> addressed before publishing `fms-odata-spec` 0.1.0 to PyPI. Do NOT silently
+> addressed before publishing `fms-odata-spec` 2.0.0 to PyPI. Do NOT silently
 > drop them; either complete them or explicitly move them to a later milestone.
 
 1. **PyPI publishing workflow** — `.github/workflows/py-publish.yml` exists
    and triggers on `py-v*` tag pushes, runs tests, builds, and uploads to PyPI
    via `twine upload` using a `PYPI_API_TOKEN` repository secret. **Remaining
    steps to enable it:**
-   - Create a PyPI API token at https://pypi.org/manage/account/token/ (the
+   - Create a PyPI API token at <https://pypi.org/manage/account/token/> (the
      first upload creates the `fms-odata-spec` project; an account-scoped token
      works for the first upload, a project-scoped token afterwards).
    - Add it as the GitHub repository secret `PYPI_API_TOKEN` (Settings →
@@ -101,10 +102,9 @@ python -m build                  # sdist + wheel into dist/
    - Create a `pypi` environment (Settings → Environments → New environment)
      — the workflow references `environment: pypi` for protection rules
      (optional but recommended: require manual approval, restrict to `main`).
-   - Re-trigger by deleting and re-pushing the `py-v0.1.0` tag, or by pushing
-     a new tag for the next release. The existing `py-v0.1.0` tag will not
-     retroactively trigger the workflow because the workflow file did not
-     exist at push time.
+   - Trigger by pushing the `py-v2.0.0` tag (or a new tag for the next
+     release). Note the older `py-v0.1.0` tag did not trigger the workflow
+     because the workflow file did not exist at its push time.
    Tag scheme is `py-vX.Y.Z` (distinct from the TS `vMAJOR.MINOR.PATCH` tags).
 
 2. ~~**LICENSE bundling**~~ — **DONE.** The root `LICENSE` is copied into
@@ -115,20 +115,20 @@ python -m build                  # sdist + wheel into dist/
 3. **CHANGELOG** — no `CHANGELOG.md` exists for the Python package (the TS
    package has none either, so this is consistent). For semver discipline on
    PyPI, add at least a `packages/fms-odata-spec-py/CHANGELOG.md` with the
-   0.1.0 entry before publishing.
+   2.0.0 entry before publishing.
 
 4. **`ODataEntity[T]` ergonomics review** — the wrapping-dataclass approach
    means callers access `envelope.entity.field` rather than `envelope.field`.
    This is the one place the Python API is noticeably less ergonomic than the
-   TS intersection type. Before 0.1.0, decide whether to keep it as-is (and
+   TS intersection type. Before 2.0.0, decide whether to keep it as-is (and
    document it loudly) or add a `from_dict` constructor / `Mapping`-backed
-   variant. Changing it after 0.1.0 is a breaking change.
+   variant. Changing it after 2.0.0 is a breaking change.
 
 5. **CI matrix Python 3.14** — `py-ci.yml` matrix tops out at 3.13. Python 3.14
    is released; add `"3.14"` to the matrix once
    `actions/setup-python` ships a stable 3.14 on the runners.
 
-6. **Async token-refresh helper** — `FMIDAuthConfig.on_unauthorized` is typed
+6. **Async token-refresh helper** — `FMOAuthAuthConfig.on_unauthorized` is typed
    but nothing invokes it (this package is types + pure helpers only). This
    matches the TS package, but document it explicitly in the Python README so
    downstream consumers know they must wire it up themselves.
@@ -143,6 +143,7 @@ python -m build                  # sdist + wheel into dist/
 
 - Initial port landed on branch `feature/py-spec` (branched from `develop`).
 - Merge `feature/py-spec` into `develop` via a PR once reviewed.
-- The Python package version (`0.1.0`) is independent of the TS package
-  version (`1.1.0`) and of any git tag on `main`. Do not lockstep them unless
-  explicitly asked.
+- The Python package version (`2.0.0`) and the TS package version (`2.0.0`)
+  were bumped together for the v2.0.0 spec overhaul, but they remain
+  independently versioned/published and are not required to lockstep in
+  future releases unless explicitly asked.

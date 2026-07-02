@@ -20,7 +20,7 @@ def test_every_endpoint_has_required_fields() -> None:
         assert e.method in ("GET", "POST", "PATCH", "PUT", "DELETE")
         assert e.path.startswith("/")
         assert e.description
-        assert e.min_version in ("19", "21", "22", "26")
+        assert e.min_version in ("20", "21", "22", "26")
         assert e.category in (
             "discovery", "metadata", "query", "crud", "batch",
             "scripts", "containers", "schema", "webhooks",
@@ -38,15 +38,22 @@ def test_get_endpoint_returns_none_for_unknown() -> None:
     assert get_endpoint("nope") is None
 
 
-def test_get_endpoints_for_version_19_excludes_webhooks() -> None:
-    eps = get_endpoints_for_version("19")
+def test_get_endpoints_for_version_20_excludes_webhooks() -> None:
+    eps = get_endpoints_for_version("20")
     ids = {e.id for e in eps}
     assert "getRecords" in ids
     assert "createWebhook" not in ids
     assert "runScriptById" not in ids
 
 
-def test_get_endpoints_for_version_26_includes_script_by_id() -> None:
+def test_get_endpoints_for_version_21_includes_script_by_id() -> None:
+    eps = get_endpoints_for_version("21")
+    ids = {e.id for e in eps}
+    assert "runScriptById" in ids
+    assert "createWebhook" not in ids
+
+
+def test_get_endpoints_for_version_26_includes_all() -> None:
     eps = get_endpoints_for_version("26")
     ids = {e.id for e in eps}
     assert "runScriptById" in ids

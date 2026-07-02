@@ -39,7 +39,7 @@ def test_system_tables() -> None:
     [
         ("21.1.2.500", FMServerVersion(21, 1, 2, "21.1.2.500")),
         ("26.0.1", FMServerVersion(26, 0, 1, "26.0.1")),
-        ("  19.2.1  ", FMServerVersion(19, 2, 1, "19.2.1")),
+        ("  20.2.1  ", FMServerVersion(20, 2, 1, "20.2.1")),
         ("nope", None),
         ("", None),
     ],

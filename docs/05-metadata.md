@@ -36,7 +36,7 @@ Present with value `true` if the condition holds; absent (or `false`) otherwise.
 | `Global` | Field contains a global value |
 | `Calculation` | Field is a calculation type |
 | `Summary` | Field is a summary type |
-| `Computed` | Field is a calculation or derives value from external sources via auto-enter options |
+| `Computed` | Field is a calculation or derives value from external sources via auto-enter options (v26.x+) |
 
 ### Value annotations
 

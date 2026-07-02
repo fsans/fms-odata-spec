@@ -1,13 +1,14 @@
 # 14 — Reconciliation Matrix
 
-This document maps the divergence between the two existing wrapper repositories and provides recommendations for aligning them on this shared spec.
+This document maps the divergence between the existing wrapper repositories and provides recommendations for aligning them on this shared spec.
 
 ## Repositories
 
 | Repository | Type | Language | Package | Version analyzed |
-|------------|------|----------|---------|------------------|
+| ---------- | ---- | -------- | ------- | ---------------- |
 | [fms-odata-mcp](https://github.com/fsans/fms-odata-mcp) | MCP server | TypeScript | `filemaker-odata-mcp` | 0.8.2 |
 | [fms-odata-js](https://github.com/fsans/fms-odata-js) | JS wrapper | TypeScript | `fms-odata-js` | 0.1.6 |
+| [fms-odata-py](https://github.com/fsans/fms-odata-py) | Python wrapper | Python | `fms-odata-py` | Pending analysis |
 
 ## Architectural comparison
 
@@ -58,7 +59,7 @@ This document maps the divergence between the two existing wrapper repositories 
 | Type casting | Yes (v21.1+) | No | Optional (version-gated) |
 | Parameterized filters | Yes (v21.1+) | No | Optional (version-gated) |
 | Scripts (by name) | Yes | Yes | Yes |
-| Scripts (by FMSID) | Yes (v26+) | No | Yes (version-gated) |
+| Scripts (by FMSID) | Yes (v21.1+) | No | Yes (version-gated) |
 | List scripts | Yes (v26+) | No (parse metadata) | Yes |
 | Container upload (binary) | No | Yes | Yes |
 | Container upload (base64) | No | Yes | Yes |
@@ -76,7 +77,7 @@ This document maps the divergence between the two existing wrapper repositories 
 | Connection persistence | Yes (config file) | No | Optional |
 | URL encoding quirks | Handled | Handled | Must handle |
 | Auth: Basic | Yes | Yes | Yes |
-| Auth: FMID | No (Server only) | Yes (via token provider) | Yes |
+| Auth: OAuth Bearer | No (Server only) | Yes (via token provider) | Yes |
 | Auth: 401 retry | No | Yes (`onUnauthorized`) | Recommended |
 | TLS verification toggle | Yes | No (env var) | Yes |
 
@@ -90,7 +91,7 @@ This document maps the divergence between the two existing wrapper repositories 
 | Batch requests | Medium | Useful for atomic multi-operation; add as MCP tool |
 | Record references (`$ref`) | Medium | Standard OData feature |
 | Cross-join | Low | Niche feature |
-| FMID auth (FileMaker Cloud) | High | Currently Server-only; needed for Cloud support |
+| OAuth Bearer auth (FileMaker Cloud) | High | Currently Server-only; needed for Cloud support |
 | 401 retry / token refresh | Medium | Important for FileMaker Cloud token expiry |
 | Webhooks | Low | Niche feature; can add as MCP tools |
 
@@ -98,11 +99,11 @@ This document maps the divergence between the two existing wrapper repositories 
 
 | Missing feature | Priority | Notes |
 |-----------------|----------|-------|
-| `$apply` (aggregation) | Medium | Supported in FMS 22.0.1+; add to query builder |
+| `$apply` (aggregation) | Medium | Supported in FMS 22.0+; add to query builder |
 | Version detection | High | Needed for feature gating |
 | Feature gating | Medium | Currently all features available regardless of server version |
 | Schema editing (DDL) | Low | Optional; can add as separate module |
-| Scripts by FMSID | Medium | Supported in FMS 26+; add for stable integrations |
+| Scripts by FMSID | Medium | Supported in FMS 21.1+; add for stable integrations |
 | List scripts from metadata | Low | Can parse from existing metadata fetch |
 | Type casting in filters | Low | Niche feature |
 | Parameterized filters | Low | Niche feature |
@@ -160,7 +161,7 @@ Both repos should:
 ### 9. Standardize auth handling
 
 Both repos should:
-- Support Basic auth (Server) and FMID token (Cloud).
+- Support Basic auth (Server) and OAuth Bearer token (Cloud).
 - Accept auth as a static string or async function (for token refresh).
 - Auto-detect the auth scheme from the token format.
 - Handle 401 responses with a retry/refresh callback.
@@ -192,11 +193,15 @@ Both repos should:
 
 1. fms-odata-js adds `$apply` aggregation support.
 2. fms-odata-js adds FMSID-based script invocation.
-3. fms-odata-mcp adds FMID auth support.
+3. fms-odata-mcp adds OAuth Bearer auth support.
 4. Both repos add record references (`$ref`) and cross-join support.
 
 ### Phase 4: Ongoing sync
 
 1. When Claris releases a new FileMaker Server version, update this spec first.
-2. Both repos consume the updated spec and types.
-3. Both repos implement new features following the spec's guidance.
+2. All repos consume the updated spec and types.
+3. All repos implement new features following the spec's guidance.
+
+### fms-odata-py
+
+The Python wrapper ([fms-odata-py](https://github.com/fsans/fms-odata-py)) is a newer addition to the ecosystem. A full reconciliation analysis (architectural comparison, feature coverage matrix, gap analysis) is pending. Once analyzed, it should be integrated into the comparison tables above and aligned with the same spec conventions.

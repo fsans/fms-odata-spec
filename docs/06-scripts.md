@@ -91,7 +91,7 @@ OData does **not** support script names with:
 - Special characters: `@`, `&`, `/`, etc.
 - Names beginning with a number
 
-If a script name contains unsupported characters, use the FMSID form (`Script.FMSID:<id>`) instead (Claris 2026+).
+If a script name contains unsupported characters, use the FMSID form (`Script.FMSID:<id>`) instead (Claris 2024+ / v21.1+).
 
 ## Server-side script behavior
 
@@ -156,7 +156,7 @@ Common script error codes follow FileMaker's standard error code list (e.g., `0`
 Downstream libraries should:
 
 1. Support all three scopes (database, entity-set, record).
-2. Support both name-based and FMSID-based invocation (Claris 2026+).
+2. Support both name-based and FMSID-based invocation (FMSID available from Claris 2024+ / v21.1+).
 3. Accept string, number, and JSON object parameters.
 4. Parse the `scriptResult.code` and `scriptResult.resultParameter` from the response.
 5. Expose script error codes as typed errors (e.g., `FMScriptError` with `code` and `resultParameter`).

@@ -5,14 +5,14 @@
  */
 
 /** Authentication scheme supported by FileMaker OData. */
-export type FMAuthScheme = 'Basic' | 'FMID';
+export type FMAuthScheme = 'Basic' | 'Bearer';
 
-/** Static auth token string (e.g., "Basic dXNlcjpwYXNz" or "FMID <token>"). */
+/** Static auth token string (e.g., "Basic dXNlcjpwYXNz" or "Bearer <token>"). */
 export type FMAuthToken = string;
 
 /**
  * Token provider function. Returns the auth header value.
- * Can be async to support token refresh (e.g., Claris ID token expiry).
+ * Can be async to support token refresh (e.g., OAuth token expiry).
  */
 export type FMAuthTokenProvider = () => string | Promise<string>;
 
@@ -23,22 +23,22 @@ export interface FMBasicAuthConfig {
   password: string;
 }
 
-/** Configuration for FMID auth (FileMaker Cloud). */
-export interface FMIDAuthConfig {
-  scheme: 'FMID';
+/** Configuration for OAuth/Bearer auth (external identity providers, FileMaker Cloud). */
+export interface FMOAuthAuthConfig {
+  scheme: 'Bearer';
   token: string;
   /** Optional refresh callback invoked on 401 responses. */
   onUnauthorized?: () => Promise<string>;
 }
 
 /** Union of auth configurations. */
-export type FMAuthConfig = FMBasicAuthConfig | FMIDAuthConfig;
+export type FMAuthConfig = FMBasicAuthConfig | FMOAuthAuthConfig;
 
 /** Standard auth-related headers. */
 export interface FMAuthHeaders {
   Authorization: string;
-  'OData-Version'?: '4.0';
-  'OData-MaxVersion'?: '4.0';
+  'OData-Version'?: '4.0' | '4.01';
+  'OData-MaxVersion'?: '4.0' | '4.01';
 }
 
 /** Build a Basic auth header value from account and password. */
@@ -51,16 +51,16 @@ export function basicAuth(account: string, password: string): string {
   return `Basic ${btoa(raw)}`;
 }
 
-/** Build an FMID auth header value from a Claris ID token. */
-export function fmidAuth(token: string): string {
-  return `FMID ${token}`;
+/** Build a Bearer auth header value from an OAuth session token. */
+export function bearerAuth(token: string): string {
+  return `Bearer ${token}`;
 }
 
 /** Normalize a token string: if it already has a scheme prefix, use as-is. */
 export function normalizeAuthToken(token: string): string {
-  if (token.startsWith('Basic ') || token.startsWith('FMID ') || token.startsWith('Bearer ')) {
+  if (token.startsWith('Basic ') || token.startsWith('Bearer ')) {
     return token;
   }
-  // Default to Bearer for bare tokens (callers should use basicAuth() or fmidAuth() helpers)
+  // Default to Bearer for bare tokens (callers should use basicAuth() or bearerAuth() helpers)
   return `Bearer ${token}`;
 }

@@ -24,11 +24,11 @@ Both target the same FileMaker OData API, but they diverged in naming convention
 ### In scope
 
 - The OData API exposed by FileMaker Server and FileMaker Cloud (URL prefix: `/fmi/odata/v4/`).
-- Standard OData 4.0 features that FileMaker implements.
-- Standard OData 4.0 features that FileMaker explicitly does *not* implement.
+- Standard OData features that FileMaker implements (4.0 for v20.x, partial 4.01 from v21.x).
+- Standard OData features that FileMaker explicitly does *not* implement.
 - FileMaker-specific extensions to OData (scripts, containers, webhooks, custom headers, metadata annotations, system tables, schema modification).
-- Authentication mechanisms (HTTP Basic, Claris ID / FMID, OAuth identity providers).
-- Version-specific differences across FileMaker 19.x, 2023, 2024, and 2026.
+- Authentication mechanisms (HTTP Basic, OAuth identity providers).
+- Version-specific differences across Claris FileMaker 2023, 2024, 2025, and 2026.
 - Real-world quirks and undocumented behaviors observed in production.
 
 ### Out of scope
@@ -42,9 +42,9 @@ Both target the same FileMaker OData API, but they diverged in naming convention
 
 ## OData protocol version
 
-FileMaker Server and FileMaker Cloud implement **OData 4.0**. This is advertised via the `OData-Version: 4.0` and `OData-MaxVersion: 4.0` headers.
+FileMaker Server 2023 (v20.x) implements **OData 4.0**. FileMaker Server 2024 (v21.x) and later implement **partial OData 4.01** at intermediate conformance level, with some exceptions. The URL version segment remains `v4` for all versions.
 
-The official Claris documentation references the OData 4.01 specification for protocol conventions, but the implemented protocol version is 4.0. This spec uses "OData 4.0" when referring to the implemented version and "OData 4.01" when referring to the specification document that defines the conventions.
+The OData 4.01 transition in v21.1 added: simplified query syntax (no `$` prefix), argument parameterization, advanced query nesting, data type casting, and batch preference inheritance. See [docs/01-conformance.md](01-conformance.md) for the full conformance matrix.
 
 ## URL structure
 
@@ -77,12 +77,12 @@ The maximum URL length is influenced by OS, web server, and browser differences.
 
 This spec covers the following FileMaker Server versions:
 
-| Version | Codename | OData introduced? | Status in this spec |
-|---------|----------|-------------------|---------------------|
-| FileMaker 19.x | — | Yes (introduced) | Baseline |
-| Claris FileMaker 2023 | — | Yes | Deltas documented |
-| Claris FileMaker 2024 | — | Yes | Deltas documented |
-| Claris FileMaker 2026 | Current | Yes | Primary reference |
+| Version | Codename | OData protocol | Status in this spec |
+|---------|----------|----------------|---------------------|
+| Claris FileMaker 2023 | v20.x | OData 4.0 | Supported |
+| Claris FileMaker 2024 | v21.x | OData 4.01 (partial) | Deltas documented |
+| Claris FileMaker 2025 | v22.x | OData 4.01 (partial) | Deltas documented |
+| Claris FileMaker 2026 | v26.x | OData 4.01 (partial) | Current (primary reference) |
 | Future / next | — | — | Reserved section |
 
 Version-specific differences are documented in [docs/12-version-deltas.md](12-version-deltas.md).

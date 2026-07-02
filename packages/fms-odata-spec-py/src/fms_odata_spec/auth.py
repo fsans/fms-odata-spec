@@ -16,24 +16,24 @@ __all__ = [
     "FMAuthToken",
     "FMAuthTokenProvider",
     "FMBasicAuthConfig",
-    "FMIDAuthConfig",
+    "FMOAuthAuthConfig",
     "FMAuthConfig",
     "FMAuthHeaders",
     "basic_auth",
-    "fmid_auth",
+    "bearer_auth",
     "normalize_auth_token",
 ]
 
 #: Authentication scheme supported by FileMaker OData.
-FMAuthScheme = Literal["Basic", "FMID"]
+FMAuthScheme = Literal["Basic", "Bearer"]
 
-#: Static auth token string (e.g. ``"Basic dXNlcjpwYXNz"`` or ``"FMID <token>"``).
+#: Static auth token string (e.g. ``"Basic dXNlcjpwYXNz"`` or ``"Bearer <token>"``).
 FMAuthToken = str
 
 #: Token provider function. Returns the auth header value.
 #:
-#: May return a coroutine to support token refresh (e.g. Claris ID token
-#: expiry). The :func:`basic_auth` / :func:`fmid_auth` helpers themselves stay
+#: May return a coroutine to support token refresh (e.g. OAuth token
+#: expiry). The :func:`basic_auth` / :func:`bearer_auth` helpers themselves stay
 #: synchronous (they only build header strings), matching the TS helpers which
 #: also do not await.
 FMAuthTokenProvider = Callable[[], Union[str, Awaitable[str]]]
@@ -53,21 +53,21 @@ class FMBasicAuthConfig:
 
 
 @dataclass(frozen=True)
-class FMIDAuthConfig:
-    """Configuration for FMID auth (FileMaker Cloud)."""
+class FMOAuthAuthConfig:
+    """Configuration for OAuth/Bearer auth (external identity providers, FileMaker Cloud)."""
 
-    scheme: Literal["FMID"]
+    scheme: Literal["Bearer"]
     token: str
     #: Optional refresh callback invoked on 401 responses.
     on_unauthorized: Optional[Callable[[], Awaitable[str]]] = None
 
     def __post_init__(self) -> None:
-        if self.scheme != "FMID":
-            raise ValueError(f"FMIDAuthConfig.scheme must be 'FMID', got {self.scheme!r}")
+        if self.scheme != "Bearer":
+            raise ValueError(f"FMOAuthAuthConfig.scheme must be 'Bearer', got {self.scheme!r}")
 
 
 #: Union of auth configurations, discriminated by the ``scheme`` field.
-FMAuthConfig = Union[FMBasicAuthConfig, FMIDAuthConfig]
+FMAuthConfig = Union[FMBasicAuthConfig, FMOAuthAuthConfig]
 
 
 @dataclass
@@ -75,8 +75,8 @@ class FMAuthHeaders:
     """Standard auth-related headers."""
 
     Authorization: str
-    OData_Version: Optional[Literal["4.0"]] = None
-    OData_MaxVersion: Optional[Literal["4.0"]] = None
+    OData_Version: Optional[Literal["4.0", "4.01"]] = None
+    OData_MaxVersion: Optional[Literal["4.0", "4.01"]] = None
 
     def to_dict(self) -> Dict[str, str]:
         """Return the headers as a plain dict, dropping unset entries."""
@@ -94,15 +94,15 @@ def basic_auth(account: str, password: str) -> str:
     return f"Basic {base64.b64encode(raw).decode('ascii')}"
 
 
-def fmid_auth(token: str) -> str:
-    """Build an FMID auth header value from a Claris ID token."""
-    return f"FMID {token}"
+def bearer_auth(token: str) -> str:
+    """Build a Bearer auth header value from an OAuth session token."""
+    return f"Bearer {token}"
 
 
 def normalize_auth_token(token: str) -> str:
     """Normalize a token string: if it already has a scheme prefix, use as-is."""
-    if token.startswith(("Basic ", "FMID ", "Bearer ")):
+    if token.startswith(("Basic ", "Bearer ")):
         return token
     # Default to Bearer for bare tokens (callers should use basic_auth() or
-    # fmid_auth() helpers).
+    # bearer_auth() helpers).
     return f"Bearer {token}"
