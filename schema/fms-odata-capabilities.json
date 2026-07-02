@@ -3,18 +3,21 @@
   "$id": "https://fms-odata.dev/schema/fms-odata-capabilities.json",
   "title": "FileMaker OData API Capabilities Manifest",
   "description": "Machine-readable manifest of FileMaker Server OData API capabilities across versions. Downstream libraries can import this to programmatically check feature availability.",
-  "specVersion": "1.0.0",
-  "specDate": "2026-06-22",
-  "odataProtocolVersion": "4.0",
+  "specVersion": "2.0.0",
+  "specDate": "2026-07-02",
+  "odataProtocolVersion": "4.01",
+  "odataConformanceLevel": "intermediate",
   "urlBase": "/fmi/odata/v4",
   "urlMaxLength": 2000,
+  "defaultPageSize": 10000,
 
   "versions": {
-    "19": {
-      "name": "FileMaker 19.x",
-      "releaseYear": null,
-      "internalVersion": "19.x",
-      "status": "baseline",
+    "20": {
+      "name": "Claris FileMaker 2023",
+      "releaseYear": 2023,
+      "internalVersion": "20.x",
+      "status": "supported",
+      "odataProtocolVersion": "4.0",
       "features": {
         "serviceDocument": true,
         "metadata": true,
@@ -36,12 +39,17 @@
         "applyAggregation": false,
         "typeCasting": false,
         "parameterizedFilters": false,
+        "simplifiedQuerySyntax": false,
+        "nestedQueries": false,
+        "batchPreferenceInheritance": false,
+        "metadataFiltering": false,
         "immutableIdUrls": false,
+        "fmComment": false,
         "aiAnnotation": false,
+        "computedAnnotation": false,
         "serverVersionAnnotation": false,
         "enrichedFMComment": false,
         "authBasic": true,
-        "authFMID": false,
         "authOAuth": false
       },
       "queryOptions": {
@@ -58,10 +66,12 @@
       }
     },
     "21": {
-      "name": "Claris FileMaker 2023",
-      "releaseYear": 2023,
+      "name": "Claris FileMaker 2024",
+      "releaseYear": 2024,
       "internalVersion": "21.x",
       "status": "supported",
+      "odataProtocolVersion": "4.01",
+      "odataConformanceLevel": "intermediate",
       "features": {
         "serviceDocument": true,
         "metadata": true,
@@ -72,23 +82,28 @@
         "crossJoin": true,
         "batch": true,
         "scripts": true,
-        "scriptsByFMSID": false,
+        "scriptsByFMSID": true,
         "scriptListing": false,
         "containerBinaryUpload": true,
         "containerBase64Upload": true,
         "containerDownload": true,
         "schemaModification": true,
-        "webhooks": true,
+        "webhooks": false,
         "webhookQueryHeaders": false,
         "applyAggregation": false,
         "typeCasting": true,
         "parameterizedFilters": true,
+        "simplifiedQuerySyntax": true,
+        "nestedQueries": true,
+        "batchPreferenceInheritance": true,
+        "metadataFiltering": false,
         "immutableIdUrls": false,
-        "aiAnnotation": false,
+        "fmComment": true,
+        "aiAnnotation": true,
+        "computedAnnotation": false,
         "serverVersionAnnotation": false,
         "enrichedFMComment": false,
         "authBasic": true,
-        "authFMID": true,
         "authOAuth": true
       },
       "queryOptions": {
@@ -105,10 +120,12 @@
       }
     },
     "22": {
-      "name": "Claris FileMaker 2024",
-      "releaseYear": 2024,
+      "name": "Claris FileMaker 2025",
+      "releaseYear": 2025,
       "internalVersion": "22.x",
       "status": "supported",
+      "odataProtocolVersion": "4.01",
+      "odataConformanceLevel": "intermediate",
       "features": {
         "serviceDocument": true,
         "metadata": true,
@@ -119,7 +136,7 @@
         "crossJoin": true,
         "batch": true,
         "scripts": true,
-        "scriptsByFMSID": false,
+        "scriptsByFMSID": true,
         "scriptListing": false,
         "containerBinaryUpload": true,
         "containerBase64Upload": true,
@@ -130,12 +147,17 @@
         "applyAggregation": true,
         "typeCasting": true,
         "parameterizedFilters": true,
+        "simplifiedQuerySyntax": true,
+        "nestedQueries": true,
+        "batchPreferenceInheritance": true,
+        "metadataFiltering": true,
         "immutableIdUrls": false,
-        "aiAnnotation": false,
+        "fmComment": true,
+        "aiAnnotation": true,
+        "computedAnnotation": false,
         "serverVersionAnnotation": false,
         "enrichedFMComment": false,
         "authBasic": true,
-        "authFMID": true,
         "authOAuth": true
       },
       "queryOptions": {
@@ -156,6 +178,8 @@
       "releaseYear": 2026,
       "internalVersion": "26.x",
       "status": "current",
+      "odataProtocolVersion": "4.01",
+      "odataConformanceLevel": "intermediate",
       "features": {
         "serviceDocument": true,
         "metadata": true,
@@ -177,12 +201,17 @@
         "applyAggregation": true,
         "typeCasting": true,
         "parameterizedFilters": true,
+        "simplifiedQuerySyntax": true,
+        "nestedQueries": true,
+        "batchPreferenceInheritance": true,
+        "metadataFiltering": true,
         "immutableIdUrls": true,
+        "fmComment": true,
         "aiAnnotation": true,
+        "computedAnnotation": true,
         "serverVersionAnnotation": true,
         "enrichedFMComment": true,
         "authBasic": true,
-        "authFMID": true,
         "authOAuth": true
       },
       "queryOptions": {
@@ -205,174 +234,174 @@
       "method": "GET",
       "path": "/",
       "description": "List all hosted databases",
-      "minVersion": "19"
+      "minVersion": "20"
     },
     "getTables": {
       "method": "GET",
       "path": "/{database}",
       "description": "List tables in a database",
-      "minVersion": "19"
+      "minVersion": "20"
     },
     "getMetadata": {
       "method": "GET",
       "path": "/{database}/$metadata",
       "description": "Get CSDL/EDMX metadata",
-      "minVersion": "19"
+      "minVersion": "20"
     },
     "getRecords": {
       "method": "GET",
       "path": "/{database}/{table}",
       "description": "Query records from a table",
-      "minVersion": "19",
+      "minVersion": "20",
       "queryOptions": ["$filter", "$select", "$orderby", "$top", "$skip", "$expand", "$count", "$apply"]
     },
     "getRecord": {
       "method": "GET",
       "path": "/{database}/{table}({key})",
       "description": "Get a single record",
-      "minVersion": "19",
+      "minVersion": "20",
       "queryOptions": ["$select"]
     },
     "getFieldValue": {
       "method": "GET",
       "path": "/{database}/{table}({key})/{field}",
       "description": "Get a single field value",
-      "minVersion": "19"
+      "minVersion": "20"
     },
     "getBinaryFieldValue": {
       "method": "GET",
       "path": "/{database}/{table}({key})/{field}/$value",
       "description": "Get binary value of a container field",
-      "minVersion": "19"
+      "minVersion": "20"
     },
     "navigateRelated": {
       "method": "GET",
       "path": "/{database}/{table}({key})/{relatedTable}",
       "description": "Navigate to related table records",
-      "minVersion": "19",
+      "minVersion": "20",
       "queryOptions": ["$expand", "$select"]
     },
     "createRecord": {
       "method": "POST",
       "path": "/{database}/{table}",
       "description": "Create a new record",
-      "minVersion": "19"
+      "minVersion": "20"
     },
     "updateRecord": {
       "method": "PATCH",
       "path": "/{database}/{table}({key})",
       "description": "Update a record",
-      "minVersion": "19"
+      "minVersion": "20"
     },
     "deleteRecord": {
       "method": "DELETE",
       "path": "/{database}/{table}({key})",
       "description": "Delete a record",
-      "minVersion": "19"
+      "minVersion": "20"
     },
     "updateRecordRef": {
       "method": "POST",
       "path": "/{database}/{table}({key})/{relatedTable}/$ref",
       "description": "Add/replace a record reference",
-      "minVersion": "19",
+      "minVersion": "20",
       "alsoMethods": ["PATCH", "PUT", "DELETE"]
     },
     "batch": {
       "method": "POST",
       "path": "/{database}/$batch",
       "description": "Perform batch operations",
-      "minVersion": "19",
+      "minVersion": "20",
       "contentType": "multipart/mixed"
     },
     "runScript": {
       "method": "POST",
       "path": "/{database}/Script.{scriptName}",
       "description": "Run a FileMaker script",
-      "minVersion": "19"
+      "minVersion": "20"
     },
     "runScriptById": {
       "method": "POST",
       "path": "/{database}/Script.FMSID:{scriptId}",
       "description": "Run a FileMaker script by FMSID",
-      "minVersion": "26"
+      "minVersion": "21"
     },
     "updateContainerBinary": {
       "method": "PATCH",
       "path": "/{database}/{table}({key})/{containerField}",
       "description": "Update a container field with binary data",
-      "minVersion": "19"
+      "minVersion": "20"
     },
     "updateContainerBase64": {
       "method": "PATCH",
       "path": "/{database}/{table}({key})",
       "description": "Update container fields with base64-encoded data",
-      "minVersion": "19"
+      "minVersion": "20"
     },
     "createTable": {
       "method": "POST",
       "path": "/{database}/FileMaker_Tables",
       "description": "Create a new table",
-      "minVersion": "19"
+      "minVersion": "20"
     },
     "addFields": {
       "method": "PATCH",
       "path": "/{database}/FileMaker_Tables('{tableName}')",
       "description": "Add fields to a table",
-      "minVersion": "19"
+      "minVersion": "20"
     },
     "deleteTable": {
       "method": "DELETE",
       "path": "/{database}/FileMaker_Tables('{tableName}')",
       "description": "Delete a table",
-      "minVersion": "19"
+      "minVersion": "20"
     },
     "deleteField": {
       "method": "DELETE",
       "path": "/{database}/FileMaker_Tables('{tableName}')/{fieldName}",
       "description": "Delete a field from a table",
-      "minVersion": "19"
+      "minVersion": "20"
     },
     "createIndex": {
       "method": "POST",
       "path": "/{database}/FileMaker_Indexes",
       "description": "Create a field index",
-      "minVersion": "19"
+      "minVersion": "20"
     },
     "deleteIndex": {
       "method": "DELETE",
       "path": "/{database}/FileMaker_Indexes('{indexName}')",
       "description": "Delete an index",
-      "minVersion": "19"
+      "minVersion": "20"
     },
     "createWebhook": {
       "method": "POST",
       "path": "/{database}/Webhook.Add",
       "description": "Create a webhook",
-      "minVersion": "21"
+      "minVersion": "22"
     },
     "deleteWebhook": {
       "method": "POST",
       "path": "/{database}/Webhook.Remove",
       "description": "Delete a webhook",
-      "minVersion": "21"
+      "minVersion": "22"
     },
     "getWebhook": {
       "method": "POST",
       "path": "/{database}/Webhook.Get",
       "description": "Get specified webhook data",
-      "minVersion": "21"
+      "minVersion": "22"
     },
     "getAllWebhooks": {
       "method": "POST",
       "path": "/{database}/Webhook.GetAll",
       "description": "Get all webhooks",
-      "minVersion": "21"
+      "minVersion": "22"
     },
     "invokeWebhook": {
       "method": "POST",
       "path": "/{database}/Webhook.Invoke",
       "description": "Manually invoke a webhook",
-      "minVersion": "21"
+      "minVersion": "22"
     }
   },
 
@@ -424,12 +453,12 @@
   "immutableIds": {
     "FMTID": { "replaces": "table name in URL paths", "minVersion": "26" },
     "FMFID": { "replaces": "field name in $select, $orderby, $filter", "minVersion": "26" },
-    "FMSID": { "replaces": "script name in Script.FMSID:{id}", "minVersion": "26" }
+    "FMSID": { "replaces": "script name in Script.FMSID:{id}", "minVersion": "21" }
   },
 
   "authSchemes": {
     "Basic": { "use": "FileMaker Server (on-premise)", "format": "Basic {base64(account:password)}" },
-    "FMID": { "use": "FileMaker Cloud", "format": "FMID {ClarisIDToken}", "tokenExpiryHours": 1 }
+    "OAuth": { "use": "FileMaker Cloud and external identity providers", "format": "Bearer {session-token}", "tokenExpiryHours": 1, "minVersion": "21" }
   },
 
   "responseFormats": {

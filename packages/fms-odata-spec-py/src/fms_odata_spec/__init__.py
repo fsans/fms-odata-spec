@@ -10,9 +10,12 @@ from __future__ import annotations
 
 # Versions and feature flags
 from .versions import (
+    DEFAULT_PAGE_SIZE,
     FM_VERSION_MATRIX,
     FM_VERSION_NAMES,
+    ODATA_CONFORMANCE_LEVEL,
     ODATA_PROTOCOL_VERSION,
+    ODataProtocolVersion,
     FMFeatureFlags,
     FMQueryOptionFlags,
     FMVersionInfo,
@@ -31,9 +34,9 @@ from .auth import (
     FMAuthToken,
     FMAuthTokenProvider,
     FMBasicAuthConfig,
-    FMIDAuthConfig,
+    FMOAuthAuthConfig,
     basic_auth,
-    fmid_auth,
+    bearer_auth,
     normalize_auth_token,
 )
 
@@ -173,14 +176,17 @@ from .errors import (
     is_fm_script_error,
 )
 
-__version__ = "0.1.0"
+__version__ = "2.0.0"
 
 __all__ = [
     "__version__",
     # versions
+    "DEFAULT_PAGE_SIZE",
     "FM_VERSION_MATRIX",
     "FM_VERSION_NAMES",
+    "ODATA_CONFORMANCE_LEVEL",
     "ODATA_PROTOCOL_VERSION",
+    "ODataProtocolVersion",
     "FMFeatureFlags",
     "FMQueryOptionFlags",
     "FMVersionInfo",
@@ -196,9 +202,9 @@ __all__ = [
     "FMAuthToken",
     "FMAuthTokenProvider",
     "FMBasicAuthConfig",
-    "FMIDAuthConfig",
+    "FMOAuthAuthConfig",
     "basic_auth",
-    "fmid_auth",
+    "bearer_auth",
     "normalize_auth_token",
     # endpoints
     "FM_ENDPOINTS",

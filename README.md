@@ -6,7 +6,7 @@ A canonical base reference for the **Claris FileMaker Server OData API**, intend
 
 This project provides a **unified source of conventions and a version-aware capability list** for the Claris FileMaker Server OData API. It serves as a common platform to unify FileMaker OData implementations across different languages, runtimes, and tool ecosystems.
 
-The Claris OData API has evolved across server versions (19.x, 2023, 2024, 2026) with subtle behavioral differences, undocumented quirks, and version-gated features. Without a shared reference, each wrapper library independently discovers and works around the same issues, leading to divergent implementations and duplicated effort.
+The Claris OData API has evolved across server versions (2023, 2024, 2025, 2026) with subtle behavioral differences, undocumented quirks, and version-gated features. Without a shared reference, each wrapper library independently discovers and works around the same issues, leading to divergent implementations and duplicated effort.
 
 This repository solves that by providing:
 
@@ -20,12 +20,13 @@ This repository solves that by providing:
 
 ### Current downstream implementations
 
-Three projects already consume this spec:
+Four projects already consume this spec:
 
 | Project | Type | Repository |
 | ------- | ------ | ---------- |
-| **fms-odata-mcp** | MCP server for AI agents (TypeScript) | <https://github.com/fsans/fms-odata-mcp> |
 | **fms-odata-js** | JavaScript/TypeScript client library | <https://github.com/fsans/fms-odata-js> |
+| **fms-odata-py** | Python client library | <https://github.com/fsans/fms-odata-py> |
+| **fms-odata-mcp** | MCP server for AI agents (TypeScript) | <https://github.com/fsans/fms-odata-mcp> |
 | **fms-odata-webhooks** | Webhook handler for FileMaker OData events | <https://github.com/fsans/fms-odata-webhooks> |
 
 ## What's in this repo
@@ -40,7 +41,7 @@ The primary deliverable. Read in order — each document builds on the previous:
 | 01 | [Conformance](docs/01-conformance.md) | OData standard coverage matrix — what FMS supports and what it doesn't |
 | 02 | [Endpoints](docs/02-endpoints.md) | Full endpoint reference (URL patterns, methods, status codes) |
 | 03 | [Query Options](docs/03-query-options.md) | `$filter`, `$select`, `$orderby`, `$top`, `$skip`, `$expand`, `$count`, `$apply` |
-| 04 | [Authentication](docs/04-authentication.md) | Basic auth, Claris ID (FMID), OAuth |
+| 04 | [Authentication](docs/04-authentication.md) | Basic auth, OAuth Bearer token |
 | 05 | [Metadata](docs/05-metadata.md) | `$metadata` document, annotations, system tables, version detection |
 | 06 | [Scripts](docs/06-scripts.md) | Script execution, scopes, parameters, results |
 | 07 | [Containers](docs/07-containers.md) | Container field binary/base64 upload and download |
@@ -48,7 +49,7 @@ The primary deliverable. Read in order — each document builds on the previous:
 | 09 | [Webhooks](docs/09-webhooks.md) | Webhook creation and management |
 | 10 | [Schema Modification](docs/10-schema-modification.md) | DDL: create/delete tables, fields, indexes |
 | 11 | [Non-OData Additions](docs/11-non-odata-additions.md) | FileMaker-specific extensions beyond the OData standard |
-| 12 | [Version Deltas](docs/12-version-deltas.md) | 19.x → 2023 → 2024 → 2026 → future, feature comparison matrix |
+| 12 | [Version Deltas](docs/12-version-deltas.md) | 2023 → 2024 → 2025 → 2026 → future, feature comparison matrix |
 | 13 | [Quirks](docs/13-quirks.md) | Real-world quirks, bugs, and workarounds |
 | 14 | [Reconciliation](docs/14-reconciliation.md) | Divergence matrix between the two downstream repos |
 
@@ -109,10 +110,10 @@ The spec covers these FileMaker Server versions, with deltas documented in [docs
 
 | Version | Codename | Status |
 | --------- | ---------- | -------- |
-| FileMaker 19.x | — | Baseline (OData API introduced) |
-| Claris FileMaker 2023 | — | Documented deltas |
-| Claris FileMaker 2024 | — | Documented deltas |
-| Claris FileMaker 2026 | Current | Primary reference |
+| Claris FileMaker 2023 | v20.x | Supported |
+| Claris FileMaker 2024 | v21.x | Supported |
+| Claris FileMaker 2025 | v22.x | Supported |
+| Claris FileMaker 2026 | v26.x | Current (primary reference) |
 | Future / next | — | Reserved section for announced changes |
 
 ## Source of truth
@@ -134,7 +135,7 @@ Where official docs and observed behavior diverge, both are documented and the d
 
 ## OData protocol version
 
-FileMaker Server and FileMaker Cloud implement **OData 4.0** (advertised via `OData-Version: 4.0` and `OData-MaxVersion: 4.0` headers). The official docs reference the OData 4.01 specification for protocol conventions, but the implemented protocol version is 4.0. See [docs/01-conformance.md](docs/01-conformance.md) for the full conformance level and feature support matrix.
+FileMaker Server 2023 (v20.x) implements **OData 4.0**. FileMaker Server 2024 (v21.x) and later implement **partial OData 4.01** at intermediate conformance level, with some exceptions. The URL version segment remains `v4` for all versions. See [docs/01-conformance.md](docs/01-conformance.md) for the full conformance level and feature support matrix.
 
 ## Branching model
 

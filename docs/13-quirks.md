@@ -69,7 +69,7 @@ Content-Disposition: inline; filename=myphoto.jpg
 
 **Behavior**: The FileMaker Data API (`/fmi/data/v1/`) uses a bearer token obtained via `POST /auth`. That token does NOT work with the OData API.
 
-**Workaround**: OData requires HTTP Basic auth (FileMaker Server) or FMID token (FileMaker Cloud). Do not attempt to reuse Data API tokens.
+**Workaround**: OData requires HTTP Basic auth (FileMaker Server) or OAuth Bearer token (FileMaker Cloud). Do not attempt to reuse Data API tokens.
 
 ## Self-signed TLS certificates
 

@@ -4,14 +4,36 @@
 
 FileMaker Server and FileMaker Cloud support OData at the **intermediate conformance level**, with some exceptions.
 
-The OData 4.01 specification defines three conformance levels: minimal, intermediate, and advanced. FileMaker targets intermediate but does not implement every feature required at that level.
+- **Claris FileMaker 2023 (v20.x)**: implements OData 4.0.
+- **Claris FileMaker 2024 (v21.x) onward**: implements partial OData 4.01 at intermediate conformance level. OData 4.01 was designed by OASIS to allow partial adoption, and Claris selectively integrated high-utility features rather than rewriting for full compliance.
+
+The URL version segment remains `v4` for all versions. The `OData-Version` response header may be used to distinguish 4.0 vs 4.01 behavior.
+
+### OData 4.01 features adopted in v21.1+
+
+| Feature | Description |
+| ------- | ----------- |
+| Simplified Query Syntax | System query options no longer require `$` prefix (e.g., `select` instead of `$select`) |
+| Argument Parameterization | Placeholders for data variables in `$filter` to avoid string concatenation |
+| Advanced Query Nesting | Nesting within `$select`, `$expand`, and `$crossjoin` |
+| Data Type Casting | On-the-fly type conversion in queries (e.g., `/Edm.String`) |
+| Batch Preference Inheritance | Headers set at batch request level cascade to individual operations |
+
+### Key limitations of the partial 4.01 implementation
+
+| Limitation | Description |
+| ------- | ----------- |
+| `@odata.count` vs `@count` toggle | In full OData 4.01, `@odata.count` was replaced by `@count`. FileMaker lets you pass version headers to toggle between 4.0 and 4.01 behavior to avoid breaking legacy integrations. |
+| No layout engine | Unlike the Data API, OData bypasses the layout schema layer entirely, interacting directly with base Table Occurrences on the relationship graph. |
+| Missing function evaluations in `$select` | Broad function evaluations in `$select` are not supported, preventing OData from fully replacing ODBC for some use cases. |
+| Parameterization is `$filter`-only | Cannot parameterize field names in `$select` or aggregation arguments in `$apply`. |
 
 ## Supported OData features
 
 These standard OData features are supported by the FileMaker OData API:
 
 | Feature | Status | Notes |
-|---------|--------|-------|
+| ------- | ------ | ----- |
 | Service document | Supported | GET on the database root returns the service document |
 | Metadata (`$metadata`) | Supported | CSDL/EDMX XML format with FileMaker annotations |
 | Request records from a table | Supported | GET on `/<database>/<table>` |
@@ -32,7 +54,7 @@ These standard OData features are supported by the FileMaker OData API:
 | Query option `$skip` | Supported | |
 | Query option `$expand` | Supported | |
 | Query option `$count` | Supported | Inline form `?$count=true` only (not `/$count` suffix) |
-| Query option `$apply` | Supported | aggregate, groupby (Claris 2024+ / FMS 22.0.1+) |
+| Query option `$apply` | Supported | aggregate, groupby (Claris 2025+ / FMS 22.0+) |
 | JSON format | Supported | `application/json` (default) |
 | Atom/XML format | Supported | `application/atom+xml` or `application/xml` |
 | `IEEE754Compatible=true` | Supported | Edm.Int64 and Edm.Decimal returned as strings |
@@ -50,7 +72,7 @@ These standard OData features are supported by the FileMaker OData API:
 These OData features from the intermediate conformance level are **not supported**:
 
 | Feature | Status | Notes |
-|---------|--------|-------|
+| ------- | ------ | ----- |
 | `$search` query option | Not supported | |
 | Lambda operators `any` and `all` | Not supported | |
 | `fractionalseconds()` function | Not supported | |
@@ -70,7 +92,7 @@ These OData features from the intermediate conformance level are **not supported
 ### Supported operators
 
 | Operator | Description |
-|----------|-------------|
+| ---------- | ----------- |
 | `eq` | Equal |
 | `ne` | Not equal |
 | `gt` | Greater than |
@@ -85,7 +107,7 @@ These OData features from the intermediate conformance level are **not supported
 ### Supported built-in functions
 
 | Function | Notes |
-|----------|-------|
+| ---------- | ----- |
 | `startswith()` | |
 | `endswith()` | |
 | `contains()` | |
@@ -111,7 +133,7 @@ These OData features from the intermediate conformance level are **not supported
 ### Unsupported built-in functions
 
 | Function | Notes |
-|----------|-------|
+| ---------- | ----- |
 | `fractionalseconds()` | Explicitly unsupported |
 | `isof()` | Explicitly unsupported |
 | `geo.distance()` | Explicitly unsupported |
@@ -124,7 +146,7 @@ These OData features from the intermediate conformance level are **not supported
 These FileMaker features are **not directly accessible** through standard OData API calls, but may be available indirectly via scripts:
 
 | Feature | Workaround |
-|---------|------------|
+| --------- | ---------- |
 | Access to data in external ODBC data sources | Use scripts |
 | Calculation fields depending on FileMaker plug-ins | Use scripts |
 | Calculation fields depending on host file system info (e.g. `Get(TemporaryPath)`) | Use scripts |
@@ -136,7 +158,7 @@ Scripts run by OData API calls are **server-side scripts** — they behave the s
 ## Data format support
 
 | Format | Request | Response | Notes |
-|--------|---------|----------|-------|
+| -------- | --------- | ---------- | ----- |
 | JSON | `application/json` | `application/json` (default) | Default format |
 | Atom/XML | `application/atom+xml` or `application/xml` | `application/atom+xml` or `application/xml` | For XML-structured data |
 | HTML | — | `text/html` | Response only |
@@ -146,7 +168,7 @@ Scripts run by OData API calls are **server-side scripts** — they behave the s
 ## HTTP method support
 
 | Method | Used for |
-|--------|----------|
+| ------ | ------- |
 | `GET` | Metadata, query, request data |
 | `POST` | Create record, create table, create field index, run script, update record references, create webhook |
 | `PATCH` | Update record, update record references, update container (binary), add fields to table |
