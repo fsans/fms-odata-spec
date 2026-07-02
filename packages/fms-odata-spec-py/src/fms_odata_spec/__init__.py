@@ -142,7 +142,9 @@ from .batch import (
 # Webhooks
 from .webhooks import (
     WebhookCreateParams,
+    WebhookCreateResult,
     WebhookData,
+    WebhookInvokeParams,
     WebhookOperation,
     webhook_path,
 )
@@ -176,7 +178,7 @@ from .errors import (
     is_fm_script_error,
 )
 
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 
 __all__ = [
     "__version__",
@@ -289,7 +291,9 @@ __all__ = [
     "generate_boundary",
     # webhooks
     "WebhookCreateParams",
+    "WebhookCreateResult",
     "WebhookData",
+    "WebhookInvokeParams",
     "WebhookOperation",
     "webhook_path",
     # schema

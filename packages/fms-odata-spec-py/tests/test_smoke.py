@@ -7,4 +7,4 @@ def test_package_imports() -> None:
     import fms_odata_spec
 
     assert hasattr(fms_odata_spec, "__version__")
-    assert fms_odata_spec.__version__ == "2.0.0"
+    assert fms_odata_spec.__version__ == "2.0.1"

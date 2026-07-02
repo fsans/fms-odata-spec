@@ -77,18 +77,18 @@ export const FM_ENDPOINTS: FMEndpoint[] = [
 
   // Schema
   { id: 'createTable', method: 'POST', path: '/{database}/FileMaker_Tables', description: 'Create a new table', minVersion: '20', category: 'schema', contentType: 'application/json' },
-  { id: 'addFields', method: 'PATCH', path: "/{database}/FileMaker_Tables('{tableName}')", description: 'Add fields to a table', minVersion: '20', category: 'schema', contentType: 'application/json', alsoMethods: ['PUT'] },
-  { id: 'deleteTable', method: 'DELETE', path: "/{database}/FileMaker_Tables('{tableName}')", description: 'Delete a table', minVersion: '20', category: 'schema' },
-  { id: 'deleteField', method: 'DELETE', path: "/{database}/FileMaker_Tables('{tableName}')/{fieldName}", description: 'Delete a field from a table', minVersion: '20', category: 'schema' },
-  { id: 'createIndex', method: 'POST', path: '/{database}/FileMaker_Indexes', description: 'Create a field index', minVersion: '20', category: 'schema', contentType: 'application/json' },
-  { id: 'deleteIndex', method: 'DELETE', path: "/{database}/FileMaker_Indexes('{indexName}')", description: 'Delete an index', minVersion: '20', category: 'schema' },
+  { id: 'addFields', method: 'PATCH', path: '/{database}/FileMaker_Tables/{tableName}', description: 'Add fields to a table', minVersion: '20', category: 'schema', contentType: 'application/json', alsoMethods: ['PUT'] },
+  { id: 'deleteTable', method: 'DELETE', path: '/{database}/FileMaker_Tables/{tableName}', description: 'Delete a table', minVersion: '20', category: 'schema' },
+  { id: 'deleteField', method: 'DELETE', path: '/{database}/FileMaker_Tables/{tableName}/{fieldName}', description: 'Delete a field from a table', minVersion: '20', category: 'schema' },
+  { id: 'createIndex', method: 'POST', path: '/{database}/FileMaker_Indexes/{tableName}', description: 'Create a field index (body: { indexName: <fieldName> })', minVersion: '20', category: 'schema', contentType: 'application/json' },
+  { id: 'deleteIndex', method: 'DELETE', path: '/{database}/FileMaker_Indexes/{tableName}/{fieldName}', description: 'Delete an index', minVersion: '20', category: 'schema' },
 
   // Webhooks
   { id: 'createWebhook', method: 'POST', path: '/{database}/Webhook.Add', description: 'Create a webhook', minVersion: '22', category: 'webhooks', contentType: 'application/json' },
-  { id: 'deleteWebhook', method: 'POST', path: '/{database}/Webhook.Remove', description: 'Delete a webhook', minVersion: '22', category: 'webhooks', contentType: 'application/json' },
-  { id: 'getWebhook', method: 'POST', path: '/{database}/Webhook.Get', description: 'Get specified webhook data', minVersion: '22', category: 'webhooks', contentType: 'application/json' },
-  { id: 'getAllWebhooks', method: 'POST', path: '/{database}/Webhook.GetAll', description: 'Get all webhooks', minVersion: '22', category: 'webhooks', contentType: 'application/json' },
-  { id: 'invokeWebhook', method: 'POST', path: '/{database}/Webhook.Invoke', description: 'Manually invoke a webhook', minVersion: '22', category: 'webhooks', contentType: 'application/json' },
+  { id: 'deleteWebhook', method: 'POST', path: '/{database}/Webhook.Delete({webhookId})', description: 'Delete a webhook by id', minVersion: '22', category: 'webhooks' },
+  { id: 'getWebhook', method: 'GET', path: '/{database}/Webhook.Get({webhookId})', description: 'Get specified webhook data by id', minVersion: '22', category: 'webhooks' },
+  { id: 'getAllWebhooks', method: 'GET', path: '/{database}/Webhook.GetAll', description: 'Get all webhooks', minVersion: '22', category: 'webhooks' },
+  { id: 'invokeWebhook', method: 'POST', path: '/{database}/Webhook.Invoke({webhookId})', description: 'Manually invoke a webhook (body: { rowIDs: [...] })', minVersion: '22', category: 'webhooks', contentType: 'application/json' },
 ];
 
 /** Find an endpoint by ID. */
