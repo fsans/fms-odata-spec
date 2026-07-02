@@ -285,13 +285,15 @@
       "method": "POST",
       "path": "/{database}/{table}",
       "description": "Create a new record",
-      "minVersion": "20"
+      "minVersion": "20",
+      "contentType": "application/json"
     },
     "updateRecord": {
       "method": "PATCH",
       "path": "/{database}/{table}({key})",
       "description": "Update a record",
-      "minVersion": "20"
+      "minVersion": "20",
+      "contentType": "application/json"
     },
     "deleteRecord": {
       "method": "DELETE",
@@ -304,7 +306,8 @@
       "path": "/{database}/{table}({key})/{relatedTable}/$ref",
       "description": "Add/replace a record reference",
       "minVersion": "20",
-      "alsoMethods": ["PATCH", "PUT", "DELETE"]
+      "alsoMethods": ["PATCH", "PUT", "DELETE"],
+      "contentType": "application/json"
     },
     "batch": {
       "method": "POST",
@@ -317,13 +320,15 @@
       "method": "POST",
       "path": "/{database}/Script.{scriptName}",
       "description": "Run a FileMaker script",
-      "minVersion": "20"
+      "minVersion": "20",
+      "contentType": "application/json"
     },
     "runScriptById": {
       "method": "POST",
       "path": "/{database}/Script.FMSID:{scriptId}",
       "description": "Run a FileMaker script by FMSID",
-      "minVersion": "21"
+      "minVersion": "21",
+      "contentType": "application/json"
     },
     "updateContainerBinary": {
       "method": "PATCH",
@@ -335,19 +340,22 @@
       "method": "PATCH",
       "path": "/{database}/{table}({key})",
       "description": "Update container fields with base64-encoded data",
-      "minVersion": "20"
+      "minVersion": "20",
+      "contentType": "application/json"
     },
     "createTable": {
       "method": "POST",
       "path": "/{database}/FileMaker_Tables",
       "description": "Create a new table",
-      "minVersion": "20"
+      "minVersion": "20",
+      "contentType": "application/json"
     },
     "addFields": {
       "method": "PATCH",
       "path": "/{database}/FileMaker_Tables/{tableName}",
       "description": "Add fields to a table",
-      "minVersion": "20"
+      "minVersion": "20",
+      "contentType": "application/json"
     },
     "deleteTable": {
       "method": "DELETE",
@@ -365,7 +373,8 @@
       "method": "POST",
       "path": "/{database}/FileMaker_Indexes/{tableName}",
       "description": "Create a field index (body: { indexName: <fieldName> })",
-      "minVersion": "20"
+      "minVersion": "20",
+      "contentType": "application/json"
     },
     "deleteIndex": {
       "method": "DELETE",
@@ -377,7 +386,8 @@
       "method": "POST",
       "path": "/{database}/Webhook.Add",
       "description": "Create a webhook",
-      "minVersion": "22"
+      "minVersion": "22",
+      "contentType": "application/json"
     },
     "deleteWebhook": {
       "method": "POST",
@@ -401,7 +411,8 @@
       "method": "POST",
       "path": "/{database}/Webhook.Invoke({webhookId})",
       "description": "Manually invoke a webhook (body: { rowIDs: [...] })",
-      "minVersion": "22"
+      "minVersion": "22",
+      "contentType": "application/json"
     }
   },
 
