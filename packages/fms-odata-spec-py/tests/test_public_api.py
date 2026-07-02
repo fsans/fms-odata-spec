@@ -6,7 +6,7 @@ import fms_odata_spec
 
 
 def test_version_string() -> None:
-    assert fms_odata_spec.__version__ == "2.0.0"
+    assert fms_odata_spec.__version__ == "2.0.1"
 
 
 def test_all_exported_names_resolve() -> None:

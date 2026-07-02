@@ -26,8 +26,16 @@ export interface WebhookCreateParams {
   maxFailedAttempts?: number;
 }
 
-/** Webhook data returned by Webhook.Get / Webhook.GetAll. */
+/** Webhook data returned by Webhook.Get / Webhook.GetAll.
+ *
+ * FMS uses `webhookID` (an integer) as the primary key in responses. The
+ * optional `id` field is kept for backward compatibility; callers should
+ * prefer `webhookID` and map it to `id` if needed.
+ */
 export interface WebhookData {
+  /** Integer id assigned by FMS (primary key in responses). */
+  webhookID?: number;
+  /** Legacy/optional id field. Prefer `webhookID`. */
   id?: string;
   webhook: string;
   tableName: string;
@@ -39,10 +47,41 @@ export interface WebhookData {
   maxFailedAttempts?: number;
 }
 
-/** Webhook operation types. */
-export type WebhookOperation = 'Add' | 'Remove' | 'Get' | 'GetAll' | 'Invoke';
+/** Webhook operation types.
+ *
+ * Note: FMS exposes `Webhook.Delete`, not `Webhook.Remove`.
+ */
+export type WebhookOperation = 'Add' | 'Delete' | 'Get' | 'GetAll' | 'Invoke';
 
-/** Build the URL path for a webhook operation. */
-export function webhookPath(database: string, operation: WebhookOperation): string {
-  return `/${database}/Webhook.${operation}`;
+/** Body for `Webhook.Invoke({id})`.
+ *
+ * `rowIDs` is required (an empty array is valid and triggers the webhook for
+ * all pending records). An absent body is rejected by FMS with a JSON syntax
+ * error.
+ */
+export interface WebhookInvokeParams {
+  rowIDs: Array<string | number>;
+}
+
+/** Result returned by `Webhook.Add`. */
+export interface WebhookCreateResult {
+  webhookResult: {
+    webhookID: number;
+  };
+}
+
+/** Build the URL path for a webhook operation.
+ *
+ * When `id` is provided, it is appended as an OData function argument, e.g.
+ * `Webhook.Get(1)`. When omitted, the bare operation path is returned, e.g.
+ * `Webhook.GetAll`.
+ */
+export function webhookPath(
+  database: string,
+  operation: WebhookOperation,
+  id?: number,
+): string {
+  return id === undefined
+    ? `/${database}/Webhook.${operation}`
+    : `/${database}/Webhook.${operation}(${id})`;
 }

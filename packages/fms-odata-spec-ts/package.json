@@ -1,6 +1,6 @@
 {
   "name": "@fms-odata/spec-ts",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Shared TypeScript types for the FileMaker OData API specification",
   "type": "module",
   "main": "./dist/index.js",

@@ -7,13 +7,15 @@ Mirrors ``src/webhooks.ts`` from ``@fms-odata/spec-ts``.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Dict, Literal, Optional
+from dataclasses import dataclass, field
+from typing import Dict, List, Literal, Optional, Union
 
 __all__ = [
     "WebhookCreateParams",
     "WebhookData",
     "WebhookOperation",
+    "WebhookInvokeParams",
+    "WebhookCreateResult",
     "webhook_path",
 ]
 
@@ -72,12 +74,19 @@ class WebhookCreateParams:
 class WebhookData:
     """Webhook data returned by Webhook.Get / Webhook.GetAll.
 
+    FMS uses ``webhookID`` (an integer) as the primary key in responses. The
+    optional ``id`` field is kept for backward compatibility; callers should
+    prefer ``webhookID`` and map it to ``id`` if needed.
+
     Field names are snake_case in Python; use :meth:`to_odata_dict` to emit the
     original camelCase wire keys for JSON serialization.
     """
 
     webhook: str
     table_name: str
+    #: Integer id assigned by FMS (primary key in responses).
+    webhook_id: Optional[int] = None
+    #: Legacy/optional id field. Prefer ``webhook_id``.
     id: Optional[str] = None
     endpoint_headers: Optional[Dict[str, str]] = None
     query_headers: Optional[Dict[str, str]] = None
@@ -92,6 +101,8 @@ class WebhookData:
             "webhook": self.webhook,
             "tableName": self.table_name,
         }
+        if self.webhook_id is not None:
+            out["webhookID"] = self.webhook_id
         if self.id is not None:
             out["id"] = self.id
         if self.endpoint_headers is not None:
@@ -110,9 +121,55 @@ class WebhookData:
 
 
 #: Webhook operation types.
-WebhookOperation = Literal["Add", "Remove", "Get", "GetAll", "Invoke"]
+#:
+#: Note: FMS exposes ``Webhook.Delete``, not ``Webhook.Remove``.
+WebhookOperation = Literal["Add", "Delete", "Get", "GetAll", "Invoke"]
 
 
-def webhook_path(database: str, operation: WebhookOperation) -> str:
-    """Build the URL path for a webhook operation."""
-    return f"/{database}/Webhook.{operation}"
+@dataclass
+class WebhookInvokeParams:
+    """Body for ``Webhook.Invoke({id})``.
+
+    ``row_ids`` is required (an empty list is valid and triggers the webhook
+    for all pending records). An absent body is rejected by FMS with a JSON
+    syntax error.
+    """
+
+    row_ids: List[Union[str, int]] = field(default_factory=list)
+
+    def to_odata_dict(self) -> Dict[str, object]:
+        """Return the params as a dict with the original OData wire keys."""
+        return {"rowIDs": list(self.row_ids)}
+
+
+@dataclass
+class WebhookCreateResult:
+    """Result returned by ``Webhook.Add``."""
+
+    webhook_id: int
+
+    @classmethod
+    def from_odata_dict(cls, data: Dict[str, object]) -> "WebhookCreateResult":
+        """Build from the raw OData wire dict ``{"webhookResult": {"webhookID": n}}``."""
+        result = data.get("webhookResult", {})
+        return cls(webhook_id=int(result.get("webhookID", 0)))  # type: ignore[arg-type]
+
+    def to_odata_dict(self) -> Dict[str, object]:
+        """Return the result as a dict with the original OData wire keys."""
+        return {"webhookResult": {"webhookID": self.webhook_id}}
+
+
+def webhook_path(
+    database: str,
+    operation: WebhookOperation,
+    id: Optional[int] = None,
+) -> str:
+    """Build the URL path for a webhook operation.
+
+    When ``id`` is provided, it is appended as an OData function argument, e.g.
+    ``Webhook.Get(1)``. When omitted, the bare operation path is returned, e.g.
+    ``Webhook.GetAll``.
+    """
+    if id is None:
+        return f"/{database}/Webhook.{operation}"
+    return f"/{database}/Webhook.{operation}({id})"
