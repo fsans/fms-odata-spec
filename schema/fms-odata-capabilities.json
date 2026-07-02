@@ -3,7 +3,7 @@
   "$id": "https://fms-odata.dev/schema/fms-odata-capabilities.json",
   "title": "FileMaker OData API Capabilities Manifest",
   "description": "Machine-readable manifest of FileMaker Server OData API capabilities across versions. Downstream libraries can import this to programmatically check feature availability.",
-  "specVersion": "2.0.0",
+  "specVersion": "2.0.1",
   "specDate": "2026-07-02",
   "odataProtocolVersion": "4.01",
   "odataConformanceLevel": "intermediate",
@@ -285,13 +285,17 @@
       "method": "POST",
       "path": "/{database}/{table}",
       "description": "Create a new record",
-      "minVersion": "20"
+      "minVersion": "20",
+      "contentType": "application/json",
+      "alsoMethods": ["PUT"]
     },
     "updateRecord": {
       "method": "PATCH",
       "path": "/{database}/{table}({key})",
       "description": "Update a record",
-      "minVersion": "20"
+      "minVersion": "20",
+      "contentType": "application/json",
+      "alsoMethods": ["PUT"]
     },
     "deleteRecord": {
       "method": "DELETE",
@@ -304,7 +308,8 @@
       "path": "/{database}/{table}({key})/{relatedTable}/$ref",
       "description": "Add/replace a record reference",
       "minVersion": "20",
-      "alsoMethods": ["PATCH", "PUT", "DELETE"]
+      "alsoMethods": ["PATCH", "PUT", "DELETE"],
+      "contentType": "application/json"
     },
     "batch": {
       "method": "POST",
@@ -317,13 +322,15 @@
       "method": "POST",
       "path": "/{database}/Script.{scriptName}",
       "description": "Run a FileMaker script",
-      "minVersion": "20"
+      "minVersion": "20",
+      "contentType": "application/json"
     },
     "runScriptById": {
       "method": "POST",
       "path": "/{database}/Script.FMSID:{scriptId}",
       "description": "Run a FileMaker script by FMSID",
-      "minVersion": "21"
+      "minVersion": "21",
+      "contentType": "application/json"
     },
     "updateContainerBinary": {
       "method": "PATCH",
@@ -335,41 +342,47 @@
       "method": "PATCH",
       "path": "/{database}/{table}({key})",
       "description": "Update container fields with base64-encoded data",
-      "minVersion": "20"
+      "minVersion": "20",
+      "contentType": "application/json",
+      "alsoMethods": ["PUT"]
     },
     "createTable": {
       "method": "POST",
       "path": "/{database}/FileMaker_Tables",
       "description": "Create a new table",
-      "minVersion": "20"
+      "minVersion": "20",
+      "contentType": "application/json"
     },
     "addFields": {
       "method": "PATCH",
-      "path": "/{database}/FileMaker_Tables('{tableName}')",
+      "path": "/{database}/FileMaker_Tables/{tableName}",
       "description": "Add fields to a table",
-      "minVersion": "20"
+      "minVersion": "20",
+      "contentType": "application/json",
+      "alsoMethods": ["PUT"]
     },
     "deleteTable": {
       "method": "DELETE",
-      "path": "/{database}/FileMaker_Tables('{tableName}')",
+      "path": "/{database}/FileMaker_Tables/{tableName}",
       "description": "Delete a table",
       "minVersion": "20"
     },
     "deleteField": {
       "method": "DELETE",
-      "path": "/{database}/FileMaker_Tables('{tableName}')/{fieldName}",
+      "path": "/{database}/FileMaker_Tables/{tableName}/{fieldName}",
       "description": "Delete a field from a table",
       "minVersion": "20"
     },
     "createIndex": {
       "method": "POST",
-      "path": "/{database}/FileMaker_Indexes",
-      "description": "Create a field index",
-      "minVersion": "20"
+      "path": "/{database}/FileMaker_Indexes/{tableName}",
+      "description": "Create a field index (body: { indexName: <fieldName> })",
+      "minVersion": "20",
+      "contentType": "application/json"
     },
     "deleteIndex": {
       "method": "DELETE",
-      "path": "/{database}/FileMaker_Indexes('{indexName}')",
+      "path": "/{database}/FileMaker_Indexes/{tableName}/{fieldName}",
       "description": "Delete an index",
       "minVersion": "20"
     },
@@ -377,31 +390,33 @@
       "method": "POST",
       "path": "/{database}/Webhook.Add",
       "description": "Create a webhook",
-      "minVersion": "22"
+      "minVersion": "22",
+      "contentType": "application/json"
     },
     "deleteWebhook": {
       "method": "POST",
-      "path": "/{database}/Webhook.Remove",
-      "description": "Delete a webhook",
+      "path": "/{database}/Webhook.Delete({webhookId})",
+      "description": "Delete a webhook by id",
       "minVersion": "22"
     },
     "getWebhook": {
-      "method": "POST",
-      "path": "/{database}/Webhook.Get",
-      "description": "Get specified webhook data",
+      "method": "GET",
+      "path": "/{database}/Webhook.Get({webhookId})",
+      "description": "Get specified webhook data by id",
       "minVersion": "22"
     },
     "getAllWebhooks": {
-      "method": "POST",
+      "method": "GET",
       "path": "/{database}/Webhook.GetAll",
       "description": "Get all webhooks",
       "minVersion": "22"
     },
     "invokeWebhook": {
       "method": "POST",
-      "path": "/{database}/Webhook.Invoke",
-      "description": "Manually invoke a webhook",
-      "minVersion": "22"
+      "path": "/{database}/Webhook.Invoke({webhookId})",
+      "description": "Manually invoke a webhook (body: { rowIDs: [...] })",
+      "minVersion": "22",
+      "contentType": "application/json"
     }
   },
 

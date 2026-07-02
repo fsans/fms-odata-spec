@@ -131,7 +131,7 @@ Maximum length of a text field is specified in parentheses:
 ### Request
 
 ```
-PATCH /fmi/odata/v4/<database>/FileMaker_Tables('<table-name>')
+PATCH /fmi/odata/v4/<database>/FileMaker_Tables/<table-name>
 Content-Type: application/json
 ```
 
@@ -155,7 +155,7 @@ Content-Type: application/json
 ### Request
 
 ```
-DELETE /fmi/odata/v4/<database>/FileMaker_Tables('<table-name>')
+DELETE /fmi/odata/v4/<database>/FileMaker_Tables/<table-name>
 ```
 
 ## Delete a field
@@ -163,7 +163,7 @@ DELETE /fmi/odata/v4/<database>/FileMaker_Tables('<table-name>')
 ### Request
 
 ```
-DELETE /fmi/odata/v4/<database>/FileMaker_Tables('<table-name>')/<field-name>
+DELETE /fmi/odata/v4/<database>/FileMaker_Tables/<table-name>/<field-name>
 ```
 
 ## Create a field index
@@ -171,17 +171,35 @@ DELETE /fmi/odata/v4/<database>/FileMaker_Tables('<table-name>')/<field-name>
 ### Request
 
 ```
-POST /fmi/odata/v4/<database>/FileMaker_Indexes
+POST /fmi/odata/v4/<database>/FileMaker_Indexes/<table-name>
 Content-Type: application/json
 ```
+
+### Body
+
+```json
+{
+  "indexName": "<field-name>"
+}
+```
+
+The `indexName` value is the name of the field to index. The table is
+identified by the URL path segment, not the request body.
 
 ## Delete an index
 
 ### Request
 
 ```
-DELETE /fmi/odata/v4/<database>/FileMaker_Indexes('<index-name>')
+DELETE /fmi/odata/v4/<database>/FileMaker_Indexes/<table-name>/<field-name>
 ```
+
+> **Note on URL format.** FileMaker Server rejects the OData key-parentheses
+> format (e.g. `FileMaker_Tables('Company')`) for these DDL endpoints with
+> error `-1010` ("The entity name must be specified in the URL"). Use the
+> slash-separated form shown above. The same applies to `FileMaker_Indexes`:
+> `POST /FileMaker_Indexes` with the table only in the body returns error
+> `-1003` ("Unsupported OData operation"); the table must be a path segment.
 
 ## Security considerations
 

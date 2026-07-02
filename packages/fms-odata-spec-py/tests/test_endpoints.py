@@ -79,3 +79,85 @@ def test_create_record_has_also_methods_put() -> None:
     assert e is not None
     assert "PUT" in e.also_methods
     assert e.content_type == "application/json"
+
+
+# --- DDL endpoint URL format (slash-separated, not key-parentheses) ---------
+
+def test_add_fields_uses_slash_path() -> None:
+    e = get_endpoint("addFields")
+    assert e is not None
+    assert e.method == "PATCH"
+    assert e.path == "/{database}/FileMaker_Tables/{tableName}"
+    assert "'" not in e.path
+
+
+def test_delete_table_uses_slash_path() -> None:
+    e = get_endpoint("deleteTable")
+    assert e is not None
+    assert e.method == "DELETE"
+    assert e.path == "/{database}/FileMaker_Tables/{tableName}"
+
+
+def test_delete_field_uses_slash_path() -> None:
+    e = get_endpoint("deleteField")
+    assert e is not None
+    assert e.path == "/{database}/FileMaker_Tables/{tableName}/{fieldName}"
+
+
+def test_create_index_uses_table_in_path() -> None:
+    e = get_endpoint("createIndex")
+    assert e is not None
+    assert e.method == "POST"
+    assert e.path == "/{database}/FileMaker_Indexes/{tableName}"
+
+
+def test_delete_index_uses_table_and_field_in_path() -> None:
+    e = get_endpoint("deleteIndex")
+    assert e is not None
+    assert e.method == "DELETE"
+    assert e.path == "/{database}/FileMaker_Indexes/{tableName}/{fieldName}"
+
+
+def test_create_table_unchanged() -> None:
+    e = get_endpoint("createTable")
+    assert e is not None
+    assert e.method == "POST"
+    assert e.path == "/{database}/FileMaker_Tables"
+
+
+# --- Webhook endpoint methods and URL patterns -------------------------------
+
+def test_get_all_webhooks_is_get() -> None:
+    e = get_endpoint("getAllWebhooks")
+    assert e is not None
+    assert e.method == "GET"
+    assert e.path == "/{database}/Webhook.GetAll"
+
+
+def test_get_webhook_is_get_with_id_in_path() -> None:
+    e = get_endpoint("getWebhook")
+    assert e is not None
+    assert e.method == "GET"
+    assert e.path == "/{database}/Webhook.Get({webhookId})"
+
+
+def test_delete_webhook_uses_delete_not_remove() -> None:
+    e = get_endpoint("deleteWebhook")
+    assert e is not None
+    assert e.method == "POST"
+    assert e.path == "/{database}/Webhook.Delete({webhookId})"
+    assert "Remove" not in e.path
+
+
+def test_invoke_webhook_has_id_in_path() -> None:
+    e = get_endpoint("invokeWebhook")
+    assert e is not None
+    assert e.method == "POST"
+    assert e.path == "/{database}/Webhook.Invoke({webhookId})"
+
+
+def test_create_webhook_unchanged() -> None:
+    e = get_endpoint("createWebhook")
+    assert e is not None
+    assert e.method == "POST"
+    assert e.path == "/{database}/Webhook.Add"
