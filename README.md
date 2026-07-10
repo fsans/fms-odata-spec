@@ -65,19 +65,23 @@ packages/
   fms-odata-spec-py/             # Shared Python types package (fms-odata-spec on PyPI)
     src/fms_odata_spec/         # Same surface as the TS package, as stdlib dataclasses
     tests/                      # pytest suite
+  fms-odata-spec-php/            # Shared PHP types package (fsans/fms-odata-spec-php on Packagist)
+    src/                        # Same surface as the TS package, as readonly DTOs and enums
+    tests/                      # PHPUnit suite
 _research/                      # Gitignored: cloned source repos used as input
 ```
 
 ### Companion type packages
 
-The spec ships two independent, language-specific type packages that mirror the
+The spec ships three independent, language-specific type packages that mirror the
 same API surface. They share no runtime dependency on each other and are
-versioned/published independently.
+versioned/published independently using their respective package managers.
 
 | Package | Language | Registry | Install |
 | ------- | -------- | -------- | ------- |
 | `@fms-odata/spec-ts` | TypeScript | npm | `npm install @fms-odata/spec-ts` |
 | `fms-odata-spec` | Python | PyPI | `pip install fms-odata-spec` |
+| `fsans/fms-odata-spec-php` | PHP | Packagist (unpublished) | `composer require fsans/fms-odata-spec-php` |
 
 **TypeScript package** (`packages/fms-odata-spec-ts/`):
 
@@ -99,10 +103,20 @@ pytest                           # run the test suite
 python -m build                  # build sdist + wheel into dist/
 ```
 
-The Python folder is intentionally **not** part of any npm workspace glob; the
-two package managers are kept fully decoupled. Each package has its own CI
-workflow scoped to its own path filter (`.github/workflows/py-ci.yml` for
-Python).
+**PHP package** (`packages/fms-odata-spec-php/`):
+
+```bash
+cd packages/fms-odata-spec-php
+composer install
+composer test        # PHPUnit
+composer analyse     # PHPStan level max
+composer check       # tests + static analysis
+```
+
+The Python and PHP folders are intentionally **not** part of any npm workspace
+glob; the three package managers are kept fully decoupled. Each package has its
+own CI workflow scoped to its own path filter (`.github/workflows/py-ci.yml`
+for Python, `.github/workflows/php-ci.yml` for PHP).
 
 ## Version targeting
 
@@ -130,6 +144,7 @@ Where official docs and observed behavior diverge, both are documented and the d
 - **Read the docs** to understand what the API supports and what it doesn't.
 - **Import the TypeScript types** from `packages/fms-odata-spec-ts` (`@fms-odata/spec-ts` on npm) for shared type definitions in JS/TS projects.
 - **Import the Python types** from `packages/fms-odata-spec-py` (`fms-odata-spec` on PyPI) for shared type definitions in Python projects.
+- **Import the PHP types** from `packages/fms-odata-spec-php` (`fsans/fms-odata-spec-php` on Packagist) for shared type definitions in PHP projects.
 - **Consume the JSON manifest** (`schema/fms-odata-capabilities.json`) to programmatically check feature availability per FileMaker Server version.
 - **Follow the reconciliation matrix** (docs/14-reconciliation.md) when aligning divergent implementations.
 
@@ -155,7 +170,7 @@ This repository uses a Git Flow-style workflow:
 
 **Tagging convention:**
 
-- Tags follow semantic versioning: `vMAJOR.MINOR.PATCH`.
+- Tags follow semantic versioning: `vMAJOR.MINOR.PATCH` for the spec/TS package, `py-vMAJOR.MINOR.PATCH` for the Python package, and `php-vMAJOR.MINOR.PATCH` for the PHP package.
 - Tags are annotated (`git tag -a`) with a summary of what changed.
 - Tags are only created on `main`, never on `develop`.
 - If the `@fms-odata/spec-ts` npm package version changes, the tag version should match the package version.

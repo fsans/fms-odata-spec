@@ -10,11 +10,12 @@ This is a **specification repository**, not a runnable application. It contains:
 2. A JSON capability manifest (`schema/fms-odata-capabilities.json`) — machine-readable.
 3. A TypeScript types package (`packages/fms-odata-spec-ts/`) — shared types for downstream libraries (npm: `@fms-odata/spec-ts`).
 4. A Python types package (`packages/fms-odata-spec-py/`) — the same surface as the TS package, as stdlib dataclasses (PyPI: `fms-odata-spec`).
+5. A PHP types package (`packages/fms-odata-spec-php/`) — the same surface as the TS package, as readonly DTOs and string-backed enums (Packagist: `fsans/fms-odata-spec-php`).
 
 ## Key conventions
 
 - **No emojis** in any generated markdown or code.
-- **No runtime code** — the TS package is types-only (no implementation logic). The Python package is types + pure helpers only (no HTTP client, no validation framework).
+- **No runtime code** — the TS package is types-only (no implementation logic). The Python package is types + pure helpers only (no HTTP client, no validation framework). The PHP package is types + pure helpers only (no HTTP client, no validation framework, no runtime Composer dependencies).
 - **Source of truth**: official Claris OData docs (<https://help.claris.com/en/odata-guide/>) + observed behavior from the two reference repos in `_research/` (gitignored).
 - **Version naming**: use "Claris 2023" (v20.x), "Claris 2024" (v21.x), "Claris 2025" (v22.x), "Claris 2026" (v26.x, current). Version 19.x is dropped and no longer supported. Never guess future version numbers.
 - **OData protocol version**: FileMaker implements OData 4.0 for v20.x, and partial OData 4.01 from v21.1 onward, at intermediate conformance level with some exceptions. The URL version segment remains `v4` for all versions. The 4.01 features added in v21.1 include: simplified query syntax (no `$` prefix required), argument parameterization, advanced query nesting, data type casting, and batch preference inheritance.
@@ -49,7 +50,8 @@ This is a **specification repository**, not a runnable application. It contains:
 5. Update `schema/fms-odata-capabilities.json` with new version entry and feature flags.
 6. Update `packages/fms-odata-spec-ts/src/versions.ts` with the new version constant and feature matrix.
 7. Update `packages/fms-odata-spec-py/src/fms_odata_spec/versions.py` with the same version constant and feature matrix (mirror the TS package).
-8. Update `README.md` version table if a new version was added.
+8. Update `packages/fms-odata-spec-php/src/Versions/Versions.php` with the same version constant and feature matrix (mirror the TS package).
+9. Update `README.md` version table if a new version was added.
 
 ## File structure rules
 
@@ -57,6 +59,7 @@ This is a **specification repository**, not a runnable application. It contains:
 - `docs/` files are numbered (`00-`, `01-`, ...) for reading order.
 - `packages/fms-odata-spec-ts/` is a publishable npm package (`@fms-odata/spec-ts`).
 - `packages/fms-odata-spec-py/` is a publishable Python package (`fms-odata-spec` on PyPI), versioned independently of the TS package. It is NOT part of any npm workspace glob.
+- `packages/fms-odata-spec-php/` is a publishable PHP package (`fsans/fms-odata-spec-php` on Packagist), versioned independently of the TS and Python packages. It is NOT part of any npm workspace glob.
 - `schema/` contains only the single capabilities JSON manifest.
 
 ## Verification
@@ -81,6 +84,16 @@ source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
 pytest                           # 173 tests
 python -m build                  # sdist + wheel into dist/
+```
+
+For the PHP package:
+
+```bash
+cd packages/fms-odata-spec-php
+composer install
+composer test        # PHPUnit
+composer analyse     # PHPStan level max
+composer check       # tests + static analysis
 ```
 
 ## TODO — fms-odata-spec-py v2.0.0 release blockers
