@@ -96,6 +96,40 @@ composer analyse     # PHPStan level max
 composer check       # tests + static analysis
 ```
 
+## PHP package publishing (Packagist)
+
+Packagist only reads `composer.json` from the repository root, but the PHP
+package lives in `packages/fms-odata-spec-php/`. To publish, a subtree split
+branch is used:
+
+1. Ensure the work is merged to `main` and `develop`.
+2. Create/update the subtree split branch:
+   ```bash
+   git subtree split --prefix=packages/fms-odata-spec-php -b php-package
+   ```
+   (If the branch already exists, delete it first: `git branch -D php-package`.)
+3. Tag the split branch with a bare version number (no `v` prefix, no `php-`
+   prefix — Packagist requires `MAJOR.MINOR.PATCH` or `vMAJOR.MINOR.PATCH`):
+   ```bash
+   git checkout php-package
+   git tag -a 2.0.1 -m "PHP package 2.0.1 — ..."
+   ```
+4. Push the branch and tag:
+   ```bash
+   git push origin php-package --tags
+   ```
+5. On Packagist, the repo URL `https://github.com/fsans/fms-odata-spec` is
+   registered. Packagist finds `composer.json` on the `php-package` branch
+   and resolves versions from bare `MAJOR.MINOR.PATCH` tags.
+
+**Tag rules for PHP:**
+
+- Bare `MAJOR.MINOR.PATCH` (e.g. `2.0.1`), not `php-v2.0.1`.
+- Annotated tags only (`git tag -a`).
+- Tags on the `php-package` branch, not on `main` or `develop`.
+- Distinct from the TS `vMAJOR.MINOR.PATCH` and Python `py-vMAJOR.MINOR.PATCH`
+  tags (which live on `main`).
+
 ## TODO — fms-odata-spec-py v2.0.0 release blockers
 
 > **IMPORTANT — read this before cutting the Python v2.0.0 release.**

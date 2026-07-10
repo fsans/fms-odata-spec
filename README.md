@@ -170,10 +170,20 @@ This repository uses a Git Flow-style workflow:
 
 **Tagging convention:**
 
-- Tags follow semantic versioning: `vMAJOR.MINOR.PATCH` for the spec/TS package, `py-vMAJOR.MINOR.PATCH` for the Python package, and `php-vMAJOR.MINOR.PATCH` for the PHP package.
+- Tags follow semantic versioning: `vMAJOR.MINOR.PATCH` for the spec/TS package, `py-vMAJOR.MINOR.PATCH` for the Python package, and `MAJOR.MINOR.PATCH` (bare, no prefix) for the PHP package.
 - Tags are annotated (`git tag -a`) with a summary of what changed.
-- Tags are only created on `main`, never on `develop`.
+- Spec/TS and Python tags are created on `main`. PHP tags are created on the `php-package` branch (a subtree split of `packages/fms-odata-spec-php/` to the repo root, required because Packagist only reads `composer.json` from the repository root).
 - If the `@fms-odata/spec-ts` npm package version changes, the tag version should match the package version.
+
+**PHP package publishing (Packagist):**
+
+The PHP package lives in `packages/fms-odata-spec-php/` in this monorepo, but Packagist only reads `composer.json` from the repository root. To publish:
+
+1. Ensure the work is merged to `main` and `develop`.
+2. Create the subtree split branch: `git subtree split --prefix=packages/fms-odata-spec-php -b php-package`
+3. Tag the split branch: `git tag -a MAJOR.MINOR.PATCH -m "PHP package MAJOR.MINOR.PATCH — ..."`
+4. Push: `git push origin php-package --tags`
+5. On Packagist, submit the repo URL `https://github.com/fsans/fms-odata-spec`. Packagist will find `composer.json` on the `php-package` branch and resolve versions from bare `MAJOR.MINOR.PATCH` tags.
 
 **Current tags:**
 
