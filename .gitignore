@@ -45,3 +45,4 @@ composer.lock
 
 # private
 docs/history/
+.devin/
