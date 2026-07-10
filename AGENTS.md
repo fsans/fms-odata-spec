@@ -86,15 +86,43 @@ pytest                           # 173 tests
 python -m build                  # sdist + wheel into dist/
 ```
 
-For the PHP package:
+For the PHP package (run from the repo root, where the Packagist `composer.json` lives):
 
 ```bash
-cd packages/fms-odata-spec-php
 composer install
-composer test        # PHPUnit
+composer test        # PHPUnit (283 tests)
 composer analyse     # PHPStan level max
 composer check       # tests + static analysis
 ```
+
+## PHP package publishing (Packagist)
+
+Packagist only reads `composer.json` from the repository root (default
+branch). The PHP package source lives in `packages/fms-odata-spec-php/`,
+but a root-level `composer.json` exists with PSR-4 autoload paths pointing
+into that subdirectory. To release:
+
+1. Ensure the work is merged to `main` and `develop`.
+2. Tag the merge commit on `main` with a bare version number (no `v` prefix,
+   no `php-` prefix):
+   ```bash
+   git tag -a 2.0.1 -m "PHP package 2.0.1 — ..."
+   ```
+3. Push:
+   ```bash
+   git push origin main --tags
+   ```
+4. On Packagist, the repo URL `https://github.com/fsans/fms-odata-spec` is
+   registered. Packagist reads the root `composer.json` on `main` and
+   resolves versions from bare `MAJOR.MINOR.PATCH` tags.
+
+**Tag rules for PHP:**
+
+- Bare `MAJOR.MINOR.PATCH` (e.g. `2.0.1`), not `php-v2.0.1`.
+- Annotated tags only (`git tag -a`).
+- Tags on `main`, same as the spec/TS tags.
+- Distinct from the TS `vMAJOR.MINOR.PATCH` and Python `py-vMAJOR.MINOR.PATCH`
+  tags (which use prefixes).
 
 ## TODO — fms-odata-spec-py v2.0.0 release blockers
 

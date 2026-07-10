@@ -1,6 +1,6 @@
 parameters:
     level: max
     paths:
-        - src
-        - tests
+        - ../../packages/fms-odata-spec-php/src
+        - ../../packages/fms-odata-spec-php/tests
     treatPhpDocTypesAsCertain: false

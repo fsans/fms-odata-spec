@@ -1,6 +1,6 @@
 {
     "name": "fsans/fms-odata-spec-php",
-    "description": "Shared PHP types and spec definitions for the Claris FileMaker Server OData API. Mirrors @fms-odata/spec-ts (npm) and fms-odata-spec (PyPI). Types + pure helpers only; no HTTP client, no validation framework. NOTE: Packagist reads the root composer.json in the monorepo; this file is for local development within the subdirectory.",
+    "description": "Shared PHP types and spec definitions for the Claris FileMaker Server OData API. Mirrors @fms-odata/spec-ts (npm) and fms-odata-spec (PyPI). Types + pure helpers only; no HTTP client, no validation framework.",
     "type": "library",
     "license": "MIT",
     "require": {
@@ -12,17 +12,17 @@
     },
     "autoload": {
         "psr-4": {
-            "FmsOData\\Spec\\": "src/"
+            "FmsOData\\Spec\\": "packages/fms-odata-spec-php/src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "FmsOData\\Spec\\Tests\\": "tests/"
+            "FmsOData\\Spec\\Tests\\": "packages/fms-odata-spec-php/tests/"
         }
     },
     "scripts": {
-        "test": "phpunit",
-        "analyse": "phpstan analyse",
+        "test": "phpunit -c packages/fms-odata-spec-php/phpunit.xml.dist",
+        "analyse": "phpstan analyse -c packages/fms-odata-spec-php/phpstan.neon.dist",
         "check": [
             "@test",
             "@analyse"
