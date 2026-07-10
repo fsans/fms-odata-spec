@@ -23,8 +23,7 @@ framework. All models are `final readonly class` DTOs or string-backed enums.
 composer require fsans/fms-odata-spec-php
 ```
 
-> The package is not yet published to Packagist. Until it is, install from
-> source or a VCS tag.
+Published on [Packagist](https://packagist.org/packages/fsans/fms-odata-spec-php).
 
 ## Zero runtime dependencies
 
@@ -139,18 +138,29 @@ current specification/API version is exposed through
 `FmsOData\Spec\Package::VERSION` (currently `2.0.1`). Composer versions
 come from VCS tags, not from `composer.json`.
 
-The planned tag convention is `php-vX.Y.Z` (e.g. `php-v2.0.1`), distinct
-from the TS `vMAJOR.MINOR.PATCH` tags and the Python `py-vX.Y.Z` tags.
+The tag convention is bare `MAJOR.MINOR.PATCH` (e.g. `2.0.1`), with no
+prefix. This is required by Packagist, which reads the root `composer.json`
+in the monorepo and resolves versions from bare semver tags on `main`.
+This is distinct from the TS `vMAJOR.MINOR.PATCH` tags and the Python
+`py-vMAJOR.MINOR.PATCH` tags.
 
 ## Development
 
+The Packagist `composer.json` lives at the **repository root** (not in this
+subdirectory) with PSR-4 autoload paths pointing into `packages/fms-odata-spec-php/`.
+Run all Composer commands from the repo root:
+
 ```bash
-cd packages/fms-odata-spec-php
+# From the repository root:
 composer install
-composer test           # PHPUnit
+composer test           # PHPUnit (283 tests)
 composer analyse        # PHPStan level max
 composer check          # tests + static analysis
 ```
+
+The `composer.json` in this subdirectory is for local development only
+(when working exclusively within the package directory). It is not read by
+Packagist.
 
 ## License
 

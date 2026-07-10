@@ -1,5 +1,9 @@
 # fms-odata-spec
 
+[![npm](https://img.shields.io/npm/v/@fms-odata/spec-ts?label=npm%20%40fms-odata%2Fspec-ts&logo=npm)](https://www.npmjs.com/package/@fms-odata/spec-ts)
+[![PyPI](https://img.shields.io/pypi/v/fms-odata-spec?label=PyPI%20fms-odata-spec&logo=pypi)](https://pypi.org/project/fms-odata-spec/)
+[![Packagist](https://img.shields.io/packagist/v/fsans/fms-odata-spec-php?label=Packagist%20fsans%2Ffms-odata-spec-php&logo=packagist)](https://packagist.org/packages/fsans/fms-odata-spec-php)
+
 A canonical base reference for the **Claris FileMaker Server OData API**, intended as the single source of truth that downstream libraries (MCP servers, JavaScript wrappers, and any future wrappers) conform to and evolve against.
 
 ## Purpose
@@ -81,7 +85,7 @@ versioned/published independently using their respective package managers.
 | ------- | -------- | -------- | ------- |
 | `@fms-odata/spec-ts` | TypeScript | npm | `npm install @fms-odata/spec-ts` |
 | `fms-odata-spec` | Python | PyPI | `pip install fms-odata-spec` |
-| `fsans/fms-odata-spec-php` | PHP | Packagist (unpublished) | `composer require fsans/fms-odata-spec-php` |
+| `fsans/fms-odata-spec-php` | PHP | Packagist | `composer require fsans/fms-odata-spec-php` |
 
 **TypeScript package** (`packages/fms-odata-spec-ts/`):
 
@@ -103,12 +107,11 @@ pytest                           # run the test suite
 python -m build                  # build sdist + wheel into dist/
 ```
 
-**PHP package** (`packages/fms-odata-spec-php/`):
+**PHP package** (run from the repo root, where the Packagist `composer.json` lives):
 
 ```bash
-cd packages/fms-odata-spec-php
 composer install
-composer test        # PHPUnit
+composer test        # PHPUnit (283 tests)
 composer analyse     # PHPStan level max
 composer check       # tests + static analysis
 ```
@@ -186,12 +189,17 @@ The PHP package source lives in `packages/fms-odata-spec-php/`, but a root-level
 
 **Current tags:**
 
-| Tag | Commit | Description |
-|-----|--------|-------------|
-| `v1.0.0` | `a8c7d9a` | Initial spec: 15 docs, JSON manifest, spec-ts types package |
-| `v1.1.0` | `307389f` | Multi-strategy version detection aligned with fms-odata-mcp |
-| `v1.1.1` | `b3b23ba` | Script result envelope fix + FMS v26 quirks |
-| `v1.2.0` | `b72ab04` | Complete fm-odata -> fms-odata rename (package, directory, schema, all references) |
+| Tag | Package | Description |
+|-----|---------|-------------|
+| `v1.0.0` | spec/TS | Initial spec: 15 docs, JSON manifest, spec-ts types package |
+| `v1.1.0` | spec/TS | Multi-strategy version detection aligned with fms-odata-mcp |
+| `v1.1.1` | spec/TS | Script result envelope fix + FMS v26 quirks |
+| `v1.2.0` | spec/TS | Complete fm-odata -> fms-odata rename (package, directory, schema, all references) |
+| `v2.0.0` | spec/TS | v2.0.0 spec overhaul (versions 20-26, full endpoint/query/metadata/script/container/batch/webhook/schema/error domains) |
+| `py-v0.1.0` | Python | Initial Python types package (pre-v2.0.0) |
+| `py-v2.0.0` | Python | Python types package mirroring spec-ts 2.0.0 |
+| `py-v2.0.1` | Python | Python types package 2.0.1 (DDL and webhook endpoint corrections) |
+| `2.0.1` | PHP | First PHP mirror — parity with spec-ts/Py 2.0.1 |
 
 ## License
 
