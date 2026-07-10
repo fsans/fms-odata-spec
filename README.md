@@ -172,18 +172,17 @@ This repository uses a Git Flow-style workflow:
 
 - Tags follow semantic versioning: `vMAJOR.MINOR.PATCH` for the spec/TS package, `py-vMAJOR.MINOR.PATCH` for the Python package, and `MAJOR.MINOR.PATCH` (bare, no prefix) for the PHP package.
 - Tags are annotated (`git tag -a`) with a summary of what changed.
-- Spec/TS and Python tags are created on `main`. PHP tags are created on the `php-package` branch (a subtree split of `packages/fms-odata-spec-php/` to the repo root, required because Packagist only reads `composer.json` from the repository root).
+- Spec/TS and Python tags are created on `main`. PHP tags are also created on `main` (the root `composer.json` with autoload paths into `packages/fms-odata-spec-php/` is what Packagist reads).
 - If the `@fms-odata/spec-ts` npm package version changes, the tag version should match the package version.
 
 **PHP package publishing (Packagist):**
 
-The PHP package lives in `packages/fms-odata-spec-php/` in this monorepo, but Packagist only reads `composer.json` from the repository root. To publish:
+The PHP package source lives in `packages/fms-odata-spec-php/`, but a root-level `composer.json` exists at the repository root with PSR-4 autoload paths pointing into that subdirectory. This is required because Packagist only reads `composer.json` from the repository root (the default branch). To release:
 
 1. Ensure the work is merged to `main` and `develop`.
-2. Create the subtree split branch: `git subtree split --prefix=packages/fms-odata-spec-php -b php-package`
-3. Tag the split branch: `git tag -a MAJOR.MINOR.PATCH -m "PHP package MAJOR.MINOR.PATCH — ..."`
-4. Push: `git push origin php-package --tags`
-5. On Packagist, submit the repo URL `https://github.com/fsans/fms-odata-spec`. Packagist will find `composer.json` on the `php-package` branch and resolve versions from bare `MAJOR.MINOR.PATCH` tags.
+2. Tag the merge commit on `main`: `git tag -a MAJOR.MINOR.PATCH -m "PHP package MAJOR.MINOR.PATCH — ..."`
+3. Push: `git push origin main --tags`
+4. On Packagist, the repo URL `https://github.com/fsans/fms-odata-spec` resolves versions from bare `MAJOR.MINOR.PATCH` tags on `main`.
 
 **Current tags:**
 
