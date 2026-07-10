@@ -36,10 +36,14 @@ This is a **specification repository**, not a runnable application. It contains:
 
 **Tag rules:**
 
-- Semantic versioning: `vMAJOR.MINOR.PATCH`.
+- Semantic versioning with per-package prefixes:
+  - `vMAJOR.MINOR.PATCH` for the spec/TS package (e.g. `v2.0.0`).
+  - `py-vMAJOR.MINOR.PATCH` for the Python package (e.g. `py-v2.0.1`).
+  - `MAJOR.MINOR.PATCH` (bare, no prefix) for the PHP package (e.g. `2.0.1`), required by Packagist.
 - Annotated tags only (`git tag -a`), never lightweight tags.
 - Tags only on `main`, never on `develop`.
 - If `@fms-odata/spec-ts` package version changes, the tag must match it.
+- The root `composer.json` is what Packagist reads; PHP tags must be on `main`.
 
 ## When updating the spec for a new FileMaker Server release
 
@@ -175,10 +179,10 @@ into that subdirectory. To release:
    downstream consumers know they must wire it up themselves.
 
 7. **Shared schema source** — if a genuinely shared schema/spec source (JSON
-   Schema, OpenAPI, or OData CSDL) is introduced later, both language packages
-   should be generated from or validated against it. This was deferred per the
-   original task instructions ("ask before moving anything"). Revisit before
-   the two packages drift apart in content.
+   Schema, OpenAPI, or OData CSDL) is introduced later, all three language
+   packages should be generated from or validated against it. This was
+   deferred per the original task instructions ("ask before moving anything").
+   Revisit before the packages drift apart in content.
 
 ## Branch state of the Python package
 
@@ -188,3 +192,14 @@ into that subdirectory. To release:
   were bumped together for the v2.0.0 spec overhaul, but they remain
   independently versioned/published and are not required to lockstep in
   future releases unless explicitly asked.
+
+## Branch state of the PHP package
+
+- Initial port landed on branch `feature/php-spec` (branched from `develop`).
+- Merged directly to `develop`, then to `main`. Tagged `2.0.1` on `main`.
+- Published to Packagist as `fsans/fms-odata-spec-php` (reads root
+  `composer.json` on `main`, resolves versions from bare `MAJOR.MINOR.PATCH`
+  tags).
+- The PHP package version (`2.0.1`) matches the TS and Python package
+  versions (`2.0.1`), but they remain independently versioned/published and
+  are not required to lockstep in future releases unless explicitly asked.

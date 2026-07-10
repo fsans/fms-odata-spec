@@ -5,16 +5,14 @@ on:
     branches: [main, develop]
     paths:
       - "packages/fms-odata-spec-php/**"
+      - "composer.json"
       - ".github/workflows/php-ci.yml"
   pull_request:
     branches: [main, develop]
     paths:
       - "packages/fms-odata-spec-php/**"
+      - "composer.json"
       - ".github/workflows/php-ci.yml"
-
-defaults:
-  run:
-    working-directory: packages/fms-odata-spec-php
 
 jobs:
   test:
@@ -46,6 +44,3 @@ jobs:
 
       - name: Run PHPStan
         run: composer analyse
-
-      - name: Archive (dry run)
-        run: composer archive --format=zip --file=dist
