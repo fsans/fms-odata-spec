@@ -1,0 +1,51 @@
+name: php-ci
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - "packages/fms-odata-spec-php/**"
+      - ".github/workflows/php-ci.yml"
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - "packages/fms-odata-spec-php/**"
+      - ".github/workflows/php-ci.yml"
+
+defaults:
+  run:
+    working-directory: packages/fms-odata-spec-php
+
+jobs:
+  test:
+    name: Test & static analysis (PHP ${{ matrix.php-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ["8.2", "8.3", "8.4", "8.5"]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up PHP ${{ matrix.php-version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none
+          ini-values: zend.assertions=1, assert.exception=1
+
+      - name: Validate composer.json
+        run: composer validate --strict --no-check-publish
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run PHPUnit
+        run: composer test
+
+      - name: Run PHPStan
+        run: composer analyse
+
+      - name: Archive (dry run)
+        run: composer archive --format=zip --file=dist
