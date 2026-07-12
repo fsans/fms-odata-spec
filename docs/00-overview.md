@@ -4,18 +4,21 @@
 
 This is the **canonical base reference** for the Claris FileMaker Server OData API. It documents what the API supports, what it explicitly does not support, and the FileMaker-specific extensions that go beyond the OData standard.
 
-It is not a tutorial, not a wrapper library, and not a runnable application. It is a contract that downstream libraries (MCP servers, JavaScript wrappers, Python clients, etc.) conform to and evolve against.
+It is not a tutorial, not a wrapper library, and not a runnable application. It is a contract that downstream libraries (MCP servers, JavaScript wrappers, Python clients, PHP clients, webhook handlers, etc.) conform to and evolve against.
 
 ## Why it exists
 
-Two existing wrapper projects had drifted apart in how they implement the same API:
+The ecosystem has grown from two initial wrapper projects to five downstream implementations:
 
 - **fms-odata-mcp** — a TypeScript MCP server exposing FileMaker OData as tools for AI agents.
 - **fms-odata-js** — a lightweight TypeScript client library for browsers, Node, and the FileMaker Web Viewer.
+- **fms-odata-py** — a Python client library.
+- **fms-odata-php** — a PHP client library.
+- **fms-odata-webhooks** — a webhook handler for FileMaker OData events.
 
-Both target the same FileMaker OData API, but they diverged in naming conventions, feature coverage, parameter handling, error models, and URL encoding. This spec provides a single source of truth so that:
+The original two (fms-odata-mcp and fms-odata-js) had drifted apart in how they implement the same API — diverging in naming conventions, feature coverage, parameter handling, error models, and URL encoding. This spec provides a single source of truth so that:
 
-1. Both libraries can realign on a shared contract.
+1. All downstream libraries can realign on a shared contract.
 2. Future FileMaker Server OData releases can be reflected in one place, then propagated to every derived library.
 3. New wrappers can be built against a documented spec instead of reverse-engineering the API.
 
@@ -104,10 +107,10 @@ The docs are numbered for reading order:
 11. **11-non-odata-additions.md** — Summary of all FileMaker-specific extensions.
 12. **12-version-deltas.md** — Version-by-version differences.
 13. **13-quirks.md** — Real-world quirks and workarounds.
-14. **14-reconciliation.md** — How the two existing wrapper repos diverge and how to reconcile them.
+14. **14-reconciliation.md** — How the existing wrapper repos diverge and how to reconcile them.
 
 ## Sources
 
 - **Primary**: [Claris FileMaker OData API Guide](https://help.claris.com/en/odata-guide/content/index.html)
 - **OData reference**: [OData 4.01 Protocol](http://docs.oasis-open.org/odata/odata/v4.01/os/part1-protocol/odata-v4.01-os-part1-protocol.html), [URL Conventions](https://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html), [CSDL](https://docs.oasis-open.org/odata/odata/v4.01/csprd01/part3-csdl/odata-v4.01-csprd01-part3-csdl.html), [JSON Format](https://docs.oasis-open.org/odata/odata-json-format/v4.01/odata-json-format-v4.01.html)
-- **Observed behavior**: fms-odata-mcp and fms-odata-js repositories (see docs/14-reconciliation.md).
+- **Observed behavior**: fms-odata-mcp, fms-odata-js, fms-odata-py, fms-odata-php, and fms-odata-webhooks repositories (see docs/14-reconciliation.md).

@@ -24,12 +24,13 @@ This repository solves that by providing:
 
 ### Current downstream implementations
 
-Four projects already consume this spec:
+Five projects already consume this spec:
 
 | Project | Type | Repository |
 | ------- | ------ | ---------- |
 | **fms-odata-js** | JavaScript/TypeScript client library | <https://github.com/fsans/fms-odata-js> |
 | **fms-odata-py** | Python client library | <https://github.com/fsans/fms-odata-py> |
+| **fms-odata-php** | PHP client library | <https://github.com/fsans/fms-odata-php> |
 | **fms-odata-mcp** | MCP server for AI agents (TypeScript) | <https://github.com/fsans/fms-odata-mcp> |
 | **fms-odata-webhooks** | Webhook handler for FileMaker OData events | <https://github.com/fsans/fms-odata-webhooks> |
 
@@ -138,7 +139,7 @@ The spec covers these FileMaker Server versions, with deltas documented in [docs
 The spec is built from:
 
 1. **Official Claris OData API documentation** (<https://help.claris.com/en/odata-guide/>) — primary source.
-2. **Observed behavior** from the two existing wrapper repositories (`fms-odata-mcp` and `fms-odata-js`) — real-world quirks, workarounds, and undocumented behaviors.
+2. **Observed behavior** from the downstream wrapper repositories (`fms-odata-mcp`, `fms-odata-js`, `fms-odata-py`, `fms-odata-php`, and `fms-odata-webhooks`) — real-world quirks, workarounds, and undocumented behaviors.
 
 Where official docs and observed behavior diverge, both are documented and the discrepancy is noted.
 

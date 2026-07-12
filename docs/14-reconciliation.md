@@ -168,9 +168,9 @@ Both repos should:
 
 ### 10. Align on spec as source of truth
 
-Both repos should:
+All repos should:
 - Reference this spec in their README and documentation.
-- Import shared types from `@fms-odata/spec-ts`.
+- Import shared types from the language-appropriate spec package: `@fms-odata/spec-ts` (TypeScript), `fms-odata-spec` (Python), or `fsans/fms-odata-spec-php` (PHP).
 - Consume `schema/fms-odata-capabilities.json` for feature availability checks.
 - Update their implementations when the spec is updated for new FileMaker Server versions.
 
@@ -178,9 +178,9 @@ Both repos should:
 
 ### Phase 1: Align on types and encoding (low risk)
 
-1. Both repos import `@fms-odata/spec-ts` for shared type definitions.
-2. Both repos use the shared URL encoding module.
-3. Both repos standardize environment variable names.
+1. All repos import the language-appropriate spec package for shared type definitions (`@fms-odata/spec-ts` for TypeScript, `fms-odata-spec` for Python, `fsans/fms-odata-spec-php` for PHP).
+2. All repos use the shared URL encoding module.
+3. All repos standardize environment variable names.
 
 ### Phase 2: Align on API surface (medium risk)
 
@@ -205,3 +205,7 @@ Both repos should:
 ### fms-odata-py
 
 The Python wrapper ([fms-odata-py](https://github.com/fsans/fms-odata-py)) is a newer addition to the ecosystem. A full reconciliation analysis (architectural comparison, feature coverage matrix, gap analysis) is pending. Once analyzed, it should be integrated into the comparison tables above and aligned with the same spec conventions.
+
+### fms-odata-php
+
+The PHP wrapper ([fms-odata-php](https://github.com/fsans/fms-odata-php)) is the newest addition to the ecosystem. It consumes `fsans/fms-odata-spec-php` (Packagist) for shared types. A full reconciliation analysis (architectural comparison, feature coverage matrix, gap analysis) is pending. Once analyzed, it should be integrated into the comparison tables above and aligned with the same spec conventions.
