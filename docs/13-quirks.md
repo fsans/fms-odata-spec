@@ -1,6 +1,6 @@
 # 13 — Quirks and Workarounds
 
-This document captures real-world behaviors of the FileMaker OData API that differ from the official documentation or from standard OData expectations. These quirks were observed in the downstream wrapper repositories (`fms-odata-mcp`, `fms-odata-js`, `fms-odata-py`, and `fms-odata-webhooks`) and in production usage.
+This document captures real-world behaviors of the FileMaker OData API that differ from the official documentation or from standard OData expectations. These quirks were observed in the downstream wrapper repositories (`fms-odata-mcp`, `fms-odata-js`, `fms-odata-py`, `fms-odata-php`, and `fms-odata-webhooks`) and in production usage.
 
 ## URL encoding quirks
 

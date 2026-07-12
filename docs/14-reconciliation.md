@@ -206,6 +206,6 @@ All repos should:
 
 The Python wrapper ([fms-odata-py](https://github.com/fsans/fms-odata-py)) is a newer addition to the ecosystem. A full reconciliation analysis (architectural comparison, feature coverage matrix, gap analysis) is pending. Once analyzed, it should be integrated into the comparison tables above and aligned with the same spec conventions.
 
-### PHP wrappers
+### fms-odata-php
 
-No PHP client wrapper has been published yet. When one is built, it should consume `fsans/fms-odata-spec-php` (Packagist) for shared types and follow the same reconciliation conventions described above.
+The PHP wrapper ([fms-odata-php](https://github.com/fsans/fms-odata-php)) is the newest addition to the ecosystem. It consumes `fsans/fms-odata-spec-php` (Packagist) for shared types. A full reconciliation analysis (architectural comparison, feature coverage matrix, gap analysis) is pending. Once analyzed, it should be integrated into the comparison tables above and aligned with the same spec conventions.
