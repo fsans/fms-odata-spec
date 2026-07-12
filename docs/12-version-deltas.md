@@ -236,4 +236,4 @@ Downstream libraries can detect the FileMaker Server version by:
 4. Mapping the major version number (20, 21, 22, 26) to a feature availability matrix.
 5. Returning `null` if no strategy yields a parseable version — tools should proceed with a warning, never a hard error.
 
-The `@fms-odata/spec-ts` package provides `parseServerVersion(metadataXml)` which implements this detection logic.
+The `@fms-odata/spec-ts` package provides `parseServerVersion(metadataXml)` which implements this detection logic. The Python package (`fms-odata-spec`) provides the same function as `parse_server_version()`, and the PHP package (`fsans/fms-odata-spec-php`) provides it as `Metadata::parseServerVersion()`.
