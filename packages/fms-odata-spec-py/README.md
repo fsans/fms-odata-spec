@@ -2,11 +2,12 @@
 
 Python types and spec definitions for the **Claris FileMaker Server OData API**.
 
-This is the Python companion to [`@fms-odata/spec-ts`](https://www.npmjs.com/package/@fms-odata/spec-ts).
-Both packages mirror the same specification (defined in the
+This is the Python companion to [`@fms-odata/spec-ts`](https://www.npmjs.com/package/@fms-odata/spec-ts)
+(TypeScript) and [`fsans/fms-odata-spec-php`](https://packagist.org/packages/fsans/fms-odata-spec-php)
+(PHP). All three packages mirror the same specification (defined in the
 [fms-odata-spec](https://github.com/fsans/fms-odata-spec) repository) and are
 published independently — pick the one matching your runtime. The Python
-package has **no runtime dependency** on the TypeScript package (or vice versa).
+package has **no runtime dependency** on the TypeScript or PHP packages (or vice versa).
 
 ## What's in the box
 
@@ -94,7 +95,8 @@ to [PyPI](https://pypi.org/project/fms-odata-spec/) as `fms-odata-spec`.
 - [x] **LICENSE bundling** — DONE. `LICENSE` is copied into this directory
       and declared as a wheel artifact + sdist include in `pyproject.toml`;
       verified it ships in both the wheel and sdist.
-- [ ] **CHANGELOG** — add `CHANGELOG.md` with the 2.0.0 entry.
+- [x] **CHANGELOG** — DONE. `CHANGELOG.md` exists with 2.0.0 and 2.0.1
+      entries, included in the sdist via `pyproject.toml`.
 - [ ] **`ODataEntity[T]` ergonomics** — confirm the wrapping-dataclass shape
       (`envelope.entity.field`) is acceptable before the first release; it is a
       breaking change to alter afterwards.
@@ -102,8 +104,8 @@ to [PyPI](https://pypi.org/project/fms-odata-spec/) as `fms-odata-spec`.
       `actions/setup-python` supports it.
 - [ ] **Async token-refresh** — document that `FMOAuthAuthConfig.on_unauthorized`
       is typed but not invoked by this package (downstream must wire it).
-- [ ] **Shared schema source** — revisit whether both language packages should
-      be generated from a single JSON Schema / CSDL source before they drift.
+- [ ] **Shared schema source** — revisit whether all three language packages
+      should be generated from a single JSON Schema / CSDL source before they drift.
 
 ## License
 

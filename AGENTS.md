@@ -86,7 +86,7 @@ cd packages/fms-odata-spec-py
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
-pytest                           # 173 tests
+pytest                           # 191 tests
 python -m build                  # sdist + wheel into dist/
 ```
 
@@ -157,10 +157,10 @@ into that subdirectory. To release:
    sdist include in `pyproject.toml`. Verified the LICENSE ships in both the
    wheel (`dist-info/licenses/LICENSE`) and the sdist.
 
-3. **CHANGELOG** — no `CHANGELOG.md` exists for the Python package (the TS
-   package has none either, so this is consistent). For semver discipline on
-   PyPI, add at least a `packages/fms-odata-spec-py/CHANGELOG.md` with the
-   2.0.0 entry before publishing.
+3. ~~**CHANGELOG**~~ — **DONE.** `CHANGELOG.md` files now exist for both the
+   Python and TS packages (added in the v2.0.1 release), with 2.0.0 and 2.0.1
+   entries. The Python CHANGELOG is included in the sdist via
+   `pyproject.toml`.
 
 4. **`ODataEntity[T]` ergonomics review** — the wrapping-dataclass approach
    means callers access `envelope.entity.field` rather than `envelope.field`.

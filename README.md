@@ -138,7 +138,7 @@ The spec covers these FileMaker Server versions, with deltas documented in [docs
 The spec is built from:
 
 1. **Official Claris OData API documentation** (<https://help.claris.com/en/odata-guide/>) — primary source.
-2. **Observed behavior** from the two existing wrapper repositories (`fms-odata-mcp` and `fms-odata-js`) — real-world quirks, workarounds, and undocumented behaviors.
+2. **Observed behavior** from the downstream wrapper repositories (`fms-odata-mcp`, `fms-odata-js`, `fms-odata-py`, and `fms-odata-webhooks`) — real-world quirks, workarounds, and undocumented behaviors.
 
 Where official docs and observed behavior diverge, both are documented and the discrepancy is noted.
 
