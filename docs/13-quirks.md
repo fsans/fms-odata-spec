@@ -208,3 +208,51 @@ This occurs regardless of URL encoding for parentheses or the specific aggregati
 ```
 
 **Workaround**: Include at least two fields in the `groupby` clause: `groupby((field1, field2))`. If only one grouping dimension is needed, add a second constant or redundant field.
+
+## `id` field cannot be used in `$filter` comparison operators
+
+**Behavior**: FileMaker's OData parser rejects ALL comparison operators (`eq`, `gt`, `lt`, `ge`, `le`, `ne`) when the left-hand side is the reserved internal `id` field. The error is:
+
+```json
+{"error": {"code": "-1002", "message": "Error: syntax error in URL at: ' eq '"}}
+```
+
+(or `gt`, `lt`, etc. depending on the operator). This affects every table — the `id` field is a reserved internal FileMaker record identifier and cannot be filtered on. String functions like `contains(id, '...')` also fail with a parse error.
+
+This is NOT a URL encoding issue: spaces inside string literals (e.g. `company eq 'Digital Dreams'`) work correctly with `%20` encoding. The limitation is specific to the `id` field.
+
+**What DOES work**: Filtering on any other field works correctly, including:
+- String values with spaces: `company eq 'Digital Dreams'`
+- Numeric fields: `row_id eq 1`, `update_unix_time gt 0`
+- String functions: `contains(company, 'Digital')`, `startswith(company, 'Digital')`
+- Compound filters on non-`id` fields: `company eq 'Digital Dreams' and row_id gt 5`
+
+**Workaround**: Use `row_id`, `uuid`, or any business field instead of `id` for filtering. To retrieve a record by its internal `id`, use a direct GET request to the entity key URL (`GET /Contacts(3275,...)`) rather than a `$filter` expression.
+
+**Observed on**: FileMaker Server 2026 (v26), likely all versions. Verified via `fms-odata-mcp` live testing against the `Contacts` database.
+
+## `$batch` POST returns 204 No Content for creates
+
+**Behavior**: When creating records via OData `$batch` (multipart/mixed), FileMaker returns `HTTP 204 No Content` for each successful POST sub-request within the changeset, with the header `Preference-Applied: return=minimal`. The created record data (including the new record ID) is NOT returned in the batch response.
+
+Adding `Prefer: return=representation` — either at the batch level or inside individual sub-requests — does not change this behavior. FileMaker always returns `204` for batch POSTs.
+
+This differs from standard OData `$batch` behavior, where POST sub-requests in a changeset should return `201 Created` with the created entity body (or at minimum, a `Location` header pointing to the new resource).
+
+**Workaround**: When using `$batch` for creates, the response only indicates success/failure per record — not the created record IDs or data. If you need the created records back (e.g., to know the assigned IDs), use individual (non-batch) POST requests in parallel instead. The `parallel` strategy returns full created records with IDs.
+
+**Observed on**: FileMaker Server 2026 (v26). Verified via `fms-odata-mcp` batch operations live testing.
+
+## `@odata.nextLink` pagination
+
+**Behavior**: FileMaker Server emits `@odata.nextLink` in query responses when the result set exceeds the page size. The default page size is 10,000 records. The next link contains a `$skip` token for the next page.
+
+Key observations:
+- The next link URL is absolute (includes the full `https://host/fmi/odata/v4/...` path).
+- When no `@odata.nextLink` is present (e.g., when the result set fits in one page), clients must fall back to manual `$skip`-based pagination if more records are needed.
+- The `$skip` value in the next link is cumulative (not relative to the current page).
+- `$top` controls the page size. If `$top` is not specified, the server defaults to 10,000.
+
+**Workaround**: Pagination helpers should follow `@odata.nextLink` when present, and fall back to incrementing `$skip` by the page size when no next link is provided. Always cap the total records fetched to prevent excessive memory usage on large tables.
+
+**Observed on**: FileMaker Server 2026 (v26). Verified via `fms-odata-mcp` `query_all_records` pagination helper live testing with the `Contacts` database.
